@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MAN6 EDU Lab - Final Version</title>
+    <title>MAN6 EDU Lab - Super App</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;600&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;600&family=Merriweather:wght@300;700&family=Noto+Serif:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <style>
-        /* --- VARIABLES & RESET --- */
         :root {
             --primary: #3b82f6;
-            --primary-dark: #2563eb;
             --secondary: #0f172a;
             --bg: #f1f5f9;
             --card: #ffffff;
@@ -27,22 +25,26 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { background-color: #cbd5e1; display: flex; justify-content: center; min-height: 100vh; }
 
-        /* --- APP CONTAINER (MOBILE LAYOUT) --- */
-        .app-container {
-            width: 100%; max-width: var(--app-width); background-color: var(--bg);
-            min-height: 100vh; position: relative; overflow-x: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1); padding-bottom: 90px;
+        body {
+            background-color: #cbd5e1;
+            display: flex; justify-content: center; min-height: 100vh;
         }
 
-        /* --- PAGE TRANSITIONS --- */
-        .page { display: none; animation: fadeIn 0.3s ease; padding-bottom: 20px; }
+        .app-container {
+            width: 100%; max-width: var(--app-width);
+            background-color: var(--bg);
+            min-height: 100vh; position: relative;
+            overflow-x: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding-bottom: 90px; /* Ruang untuk navigasi bawah */
+        }
+
+        /* --- PAGE SYSTEM (PENTING: Untuk Ganti Halaman) --- */
+        .page { display: none; animation: fadeIn 0.25s ease; padding-bottom: 20px; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- HEADER STYLES --- */
+        /* --- HOME HEADER --- */
         .home-header {
             background: linear-gradient(135deg, var(--secondary), var(--primary));
             padding: 3rem 1.5rem 5rem 1.5rem;
@@ -53,13 +55,6 @@
             content: ''; position: absolute; top: -50px; right: -50px;
             width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;
         }
-
-        /* --- SUB HEADER (BACK BUTTON) --- */
-        .sub-header {
-            background: var(--card); padding: 1.5rem; position: sticky; top: 0; z-index: 100;
-            display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .btn-back { width: 35px; height: 35px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
         /* --- STATUS CARD --- */
         .status-card {
@@ -76,27 +71,29 @@
         .anno-section { margin-bottom: 1.5rem; }
         .anno-header { padding: 0 1.5rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
         .anno-scroll {
-            display: flex; overflow-x: auto; gap: 1rem; padding: 0 1.5rem 10px 1.5rem; scrollbar-width: none;
+            display: flex; overflow-x: auto; gap: 1rem; padding: 0 1.5rem 10px 1.5rem;
+            scrollbar-width: none;
         }
         .anno-scroll::-webkit-scrollbar { display: none; }
-        
         .anno-card {
             min-width: 260px; background: var(--card); padding: 1rem;
             border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            display: flex; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.2s;
+            display: flex; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.1s;
         }
-        .anno-card:active { transform: scale(0.98); }
+        .anno-card:active { transform: scale(0.95); }
         .anno-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
 
         /* --- MENU GRID --- */
         .section-title { padding: 0 1.5rem; font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: var(--secondary); }
-        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem 0.5rem; padding: 0 1.5rem 2rem 1.5rem; }
-        .menu-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.1s; text-align: center;}
+        .menu-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem 0.5rem; padding: 0 1.5rem 2rem 1.5rem;
+        }
+        .menu-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.1s; }
         .menu-item:active { transform: scale(0.9); }
         .icon-box { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 8px; }
-        .menu-text { font-size: 0.75rem; font-weight: 500; }
-
-        /* Warna Icon */
+        
+        /* Colors */
         .bg-blue { background: #e0f2fe; color: #0284c7; }
         .bg-purple { background: #f3e8ff; color: #9333ea; }
         .bg-orange { background: #ffedd5; color: #ea580c; }
@@ -106,48 +103,67 @@
         .bg-red { background: #fee2e2; color: #dc2626; }
         .bg-gray { background: #f1f5f9; color: #64748b; }
 
-        /* --- MATERI STYLES --- */
-        .mapel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem 1.5rem; }
-        .mapel-card {
-            background: white; padding: 1.5rem; border-radius: 16px;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer;
+        /* --- GLOBAL COMPONENT: HEADER PAGE --- */
+        .sub-header {
+            background: var(--card); padding: 1.5rem; position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        .chapter-list { padding: 1rem 1.5rem; }
-        .chapter-card {
-            background: white; padding: 1.2rem; margin-bottom: 1rem; border-radius: 16px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; border-left: 4px solid var(--primary);
-        }
-        .lesson-container { padding: 1.5rem; background: white; min-height: 80vh; border-radius: 20px 20px 0 0; margin-top: 10px; }
-        .lesson-body { font-family: 'Noto Serif', serif; line-height: 1.8; color: #334155; }
-        .lesson-box { background: #f1f5f9; padding: 1rem; border-radius: 10px; border-left: 4px solid var(--primary); margin: 1rem 0; font-family: monospace; }
+        .btn-back { width: 35px; height: 35px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        /* --- AGENDA & JADWAL --- */
-        .agenda-card {
-            background: white; margin: 1rem 1.5rem; padding: 1.2rem; border-radius: 16px;
-            display: flex; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid #ccc;
+        /* --- HALAMAN: MATERI --- */
+        .materi-card {
+            background: var(--card); padding: 1rem; border-radius: 16px;
+            margin: 1rem 1.5rem; display: flex; gap: 15px; align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .date-box {
-            min-width: 60px; text-align: center; display: flex; flex-direction: column;
-            justify-content: center; background: #f8fafc; border-radius: 10px; padding: 5px;
+
+        /* --- HALAMAN: TUGAS --- */
+        .tugas-item {
+            background: var(--card); margin: 0.8rem 1.5rem; padding: 1.2rem;
+            border-radius: 16px; border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .day-selector { display: flex; gap: 10px; overflow-x: auto; padding: 1rem 1.5rem; scrollbar-width: none; }
-        .day-pill { padding: 8px 20px; background: white; border: 1px solid #eee; border-radius: 50px; white-space: nowrap; cursor: pointer; }
+        .deadline { font-size: 0.75rem; color: var(--danger); font-weight: 600; margin-top: 5px; }
+
+        /* --- HALAMAN: UJIAN --- */
+        .ujian-day-selector {
+            display: flex; overflow-x: auto; gap: 10px; padding: 1rem 1.5rem; scrollbar-width: none;
+        }
+        .day-pill {
+            padding: 8px 20px; background: white; border-radius: 50px; font-size: 0.9rem; color: #64748b;
+            border: 1px solid #e2e8f0; cursor: pointer; white-space: nowrap;
+        }
         .day-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .schedule-item { background: white; padding: 1rem; margin: 0 1.5rem 1rem 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary); }
+        .ujian-card {
+            background: var(--card); margin: 1rem 1.5rem; padding: 1.5rem; border-radius: 16px; text-align: center;
+        }
+        .ujian-status-off {
+            background: #fee2e2; color: #dc2626; padding: 1rem; border-radius: 10px;
+            margin-top: 1rem; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-start-ujian {
+            background: var(--primary); color: white; width: 100%; padding: 12px;
+            border: none; border-radius: 10px; margin-top: 1rem; font-weight: 600; cursor: pointer;
+        }
 
-        /* --- RAPOR & ABSEN --- */
-        .rapor-paper { background: white; margin: 1rem 1.5rem; padding: 2rem 1.5rem; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        /* --- HALAMAN: JADWAL --- */
+        .jadwal-wrapper { padding: 0 1.5rem; }
+        .jadwal-item {
+            margin-bottom: 1rem; border-left: 3px solid var(--primary); padding-left: 15px;
+        }
+
+        /* --- HALAMAN: RAPOR --- */
+        .rapor-paper {
+            background: white; margin: 1rem 1.5rem; padding: 2rem 1.5rem;
+            border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .kop-surat { text-align: center; border-bottom: 3px double #000; padding-bottom: 1rem; margin-bottom: 1.5rem; }
         .rapor-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
         .rapor-table th, .rapor-table td { border: 1px solid #000; padding: 8px; font-size: 0.85rem; text-align: center; }
         .rapor-table th { background: #f8fafc; font-weight: 600; }
         .rapor-table td:first-child { text-align: left; }
-        .absen-stat { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 1rem 1.5rem; }
-        .stat-box { background: white; padding: 1rem; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .history-item { background: white; padding: 1rem; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* --- BLOG DETAIL --- */
+        /* --- HALAMAN: BLOG DETAIL --- */
         .blog-hero { width: 100%; height: 250px; object-fit: cover; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
         .blog-container { padding: 1.5rem; margin-top: -20px; position: relative; z-index: 2; }
         .blog-back-btn {
@@ -156,13 +172,34 @@
             display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
+        /* --- HALAMAN: AKUN --- */
+        .account-header {
+            background: var(--card); padding: 2rem 1.5rem; text-align: center;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; margin-bottom: 1.5rem;
+        }
+        .profile-pic {
+            width: 90px; height: 90px; background: var(--primary); border-radius: 50%;
+            margin: 0 auto 1rem auto; border: 4px solid #e0f2fe; color: white; font-size: 2rem;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+        }
+        .digital-card {
+            background: linear-gradient(135deg, #0f172a, #334155); color: white; border-radius: 16px; padding: 1.2rem;
+            margin: 0 1.5rem 2rem 1.5rem; position: relative; overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4);
+        }
+        .settings-item {
+            padding: 1rem; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9; cursor: pointer; background: white;
+        }
+
         /* --- BOTTOM NAV --- */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%; max-width: var(--app-width);
-            height: 75px; background: white; display: flex; justify-content: space-around;
-            align-items: center; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 900; padding-bottom: env(safe-area-inset-bottom);
+            height: 75px; background: var(--card); display: flex; justify-content: space-around;
+            align-items: center; border-top-left-radius: 25px; border-top-right-radius: 25px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 900; padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { color: #94a3b8; display: flex; flex-direction: column; align-items: center; font-size: 1.3rem; text-decoration: none; width: 60px; gap: 4px;}
+        .nav-item { color: #94a3b8; font-size: 1.3rem; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; width: 60px;}
         .nav-item span { font-size: 0.65rem; font-weight: 500; }
         .nav-item.active { color: var(--primary); }
         
@@ -174,13 +211,18 @@
         }
 
         /* --- POPUP --- */
-        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:none; }
-        .overlay.active { display:block; }
-        .popup { position: fixed; bottom:-100%; left:50%; transform:translateX(-50%); width:100%; max-width:var(--app-width); background:white; padding:2rem; border-radius:30px 30px 0 0; z-index:2001; transition:0.4s; }
-        .popup.active { bottom:0; }
-        
-        /* Digital Card */
-        .digital-card { background: linear-gradient(135deg, #0f172a, #334155); color: white; padding: 1.2rem; border-radius: 16px; margin: 0 1.5rem 2rem 1.5rem; }
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7);
+            z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(3px);
+        }
+        .overlay.active { opacity: 1; visibility: visible; }
+        .bottom-sheet {
+            position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: var(--app-width); background: white;
+            border-top-left-radius: 30px; border-top-right-radius: 30px; padding: 2rem 1.5rem;
+            z-index: 2001; transition: bottom 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .bottom-sheet.active { bottom: 0; }
 
     </style>
 </head>
@@ -195,13 +237,21 @@
                         <h2 style="font-size: 1.4rem; font-weight: 700;">Halo, Fauzi! 👋</h2>
                         <p style="opacity: 0.9; font-size: 0.9rem;">XII MIPA 1 • MAN 6 JKT</p>
                     </div>
-                    <div style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);"><i class="far fa-bell"></i></div>
+                    <div style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                        <i class="far fa-bell"></i>
+                    </div>
                 </div>
             </header>
 
             <div class="status-card">
-                <div class="st-item st-border"><div style="font-size: 0.75rem; color: #94a3b8;">Kehadiran</div><div class="st-val" style="color: #10b981;">Masuk</div></div>
-                <div class="st-item"><div style="font-size: 0.75rem; color: #94a3b8;">Jam Pulang</div><div class="st-val">15:30</div></div>
+                <div class="st-item st-border">
+                    <div style="font-size: 0.75rem; color: #94a3b8;">Kehadiran</div>
+                    <div class="st-val" style="color: #10b981;">Masuk</div>
+                </div>
+                <div class="st-item">
+                    <div style="font-size: 0.75rem; color: #94a3b8;">Jam Pulang</div>
+                    <div class="st-val">15:30</div>
+                </div>
             </div>
 
             <div class="anno-section">
@@ -212,227 +262,260 @@
                 <div class="anno-scroll">
                     <div class="anno-card" onclick="openAnnouncement('libur')">
                         <div class="anno-icon" style="background: #fee2e2; color: #dc2626;"><i class="fas fa-bullhorn"></i></div>
-                        <div><h4 style="font-size:0.9rem;">Libur Puasa</h4><p style="font-size:0.75rem; color:#64748b;">11 - 13 Maret 2025</p></div>
+                        <div>
+                            <h4 style="font-size:0.9rem;">Libur Awal Puasa</h4>
+                            <p style="font-size:0.75rem; color:#64748b;">11 - 13 Maret 2025</p>
+                        </div>
                     </div>
                     <div class="anno-card" onclick="openAnnouncement('futsal')">
                         <div class="anno-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-trophy"></i></div>
-                        <div><h4 style="font-size:0.9rem;">Juara 1 Futsal</h4><p style="font-size:0.75rem; color:#64748b;">Classmeet 2025</p></div>
+                        <div>
+                            <h4 style="font-size:0.9rem;">Juara 1 Futsal</h4>
+                            <p style="font-size:0.75rem; color:#64748b;">Classmeet 2025</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <h3 class="section-title">Menu Akademik</h3>
+            <h3 class="section-title">Menu Utama</h3>
             <div class="menu-grid">
-                <div class="menu-item" onclick="goToPage('page-materi-list')">
-                    <div class="icon-box bg-blue"><i class="fas fa-book-open"></i></div><span class="menu-text">Materi</span>
+                <div class="menu-item" onclick="goToPage('page-materi')">
+                    <div class="icon-box bg-blue"><i class="fas fa-book-open"></i></div>
+                    <span class="menu-text">Materi</span>
                 </div>
                 <div class="menu-item" onclick="goToPage('page-tugas')">
-                    <div class="icon-box bg-purple"><i class="fas fa-clipboard-check"></i></div><span class="menu-text">Tugas</span>
+                    <div class="icon-box bg-purple"><i class="fas fa-clipboard-check"></i></div>
+                    <span class="menu-text">Tugas</span>
                 </div>
                 <div class="menu-item" onclick="goToPage('page-ujian')">
-                    <div class="icon-box bg-orange"><i class="fas fa-laptop-code"></i></div><span class="menu-text">Ujian</span>
+                    <div class="icon-box bg-orange"><i class="fas fa-laptop-code"></i></div>
+                    <span class="menu-text">Ujian</span>
                 </div>
                 <div class="menu-item" onclick="goToPage('page-jadwal')">
-                    <div class="icon-box bg-teal"><i class="fas fa-calendar-alt"></i></div><span class="menu-text">Jadwal</span>
+                    <div class="icon-box bg-teal"><i class="fas fa-calendar-alt"></i></div>
+                    <span class="menu-text">Jadwal</span>
                 </div>
-                <div class="menu-item" onclick="goToPage('page-absen')">
-                    <div class="icon-box bg-green"><i class="fas fa-fingerprint"></i></div><span class="menu-text">Absen</span>
+                <div class="menu-item" onclick="goToPage('page-riwayat')">
+                    <div class="icon-box bg-green"><i class="fas fa-fingerprint"></i></div>
+                    <span class="menu-text">Absen</span>
                 </div>
                 <div class="menu-item" onclick="goToPage('page-rapor')">
-                    <div class="icon-box bg-yellow"><i class="fas fa-star"></i></div><span class="menu-text">Rapor</span>
+                    <div class="icon-box bg-yellow"><i class="fas fa-star"></i></div>
+                    <span class="menu-text">Rapor</span>
                 </div>
                 <div class="menu-item" onclick="alert('Fitur Perpustakaan segera hadir!')">
-                    <div class="icon-box bg-red"><i class="fas fa-bookmark"></i></div><span class="menu-text">Perpus</span>
+                    <div class="icon-box bg-red"><i class="fas fa-bookmark"></i></div>
+                    <span class="menu-text">Perpus</span>
                 </div>
                 <div class="menu-item" onclick="togglePopup('popup-lainnya', true)">
-                    <div class="icon-box bg-gray"><i class="fas fa-th-large"></i></div><span class="menu-text">Lainnya</span>
+                    <div class="icon-box bg-gray"><i class="fas fa-th-large"></i></div>
+                    <span class="menu-text">Lainnya</span>
                 </div>
             </div>
         </div>
 
-        <div id="page-materi-list" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Pilih Mata Pelajaran</h3></div>
-            <div class="mapel-grid">
-                <div class="mapel-card" onclick="openSubject('matematika')">
-                    <div class="icon-box" style="background:#e0f2fe; color:#0284c7; box-shadow:none;"><i class="fas fa-calculator"></i></div>
-                    <h4>Matematika</h4>
-                </div>
-                <div class="mapel-card" onclick="openSubject('fisika')">
-                    <div class="icon-box" style="background:#ffedd5; color:#ea580c; box-shadow:none;"><i class="fas fa-atom"></i></div>
-                    <h4>Fisika</h4>
-                </div>
-                <div class="mapel-card" onclick="openSubject('kimia')">
-                    <div class="icon-box" style="background:#dcfce7; color:#16a34a; box-shadow:none;"><i class="fas fa-flask"></i></div>
-                    <h4>Kimia</h4>
-                </div>
-                <div class="mapel-card" onclick="openSubject('biologi')">
-                    <div class="icon-box" style="background:#f3e8ff; color:#9333ea; box-shadow:none;"><i class="fas fa-dna"></i></div>
-                    <h4>Biologi</h4>
-                </div>
+        <div id="page-materi" class="page">
+            <div class="sub-header">
+                <div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+                <h3 style="font-size: 1.1rem;">Materi Pelajaran</h3>
             </div>
-        </div>
-
-        <div id="page-materi-chapters" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-materi-list')"><i class="fas fa-arrow-left"></i></div><h3 id="subject-title">Mapel</h3></div>
-            <div class="chapter-list" id="chapter-container"></div>
-        </div>
-
-        <div id="page-materi-read" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-materi-chapters')"><i class="fas fa-arrow-left"></i></div><h3>Materi Belajar</h3></div>
-            <div class="lesson-container">
-                <h1 id="lesson-title" style="font-size:1.4rem; margin-bottom:1rem; color:var(--secondary);">Judul</h1>
-                <div id="lesson-content" class="lesson-body"></div>
-            </div>
-        </div>
-
-        <div id="page-jadwal" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Jadwal Pelajaran</h3></div>
             
-            <div class="day-selector">
-                <div class="day-pill active" onclick="switchDay('senin', this)">Senin</div>
-                <div class="day-pill" onclick="switchDay('selasa', this)">Selasa</div>
-                <div class="day-pill" onclick="switchDay('rabu', this)">Rabu</div>
-                <div class="day-pill" onclick="switchDay('kamis', this)">Kamis</div>
-                <div class="day-pill" onclick="switchDay('jumat', this)">Jumat</div>
-            </div>
-
-            <div id="content-senin">
-                <div class="schedule-item"><h4 style="font-size:1rem;">07:00 - 08:30</h4><p style="color:#666;">Upacara Bendera</p></div>
-                <div class="schedule-item" style="border-color:#0d9488;"><h4 style="font-size:1rem;">08:30 - 10:00</h4><p style="color:#666;">Matematika Wajib</p></div>
-            </div>
-            <div id="content-selasa" style="display:none;">
-                <div class="schedule-item" style="border-color:#9333ea;"><h4 style="font-size:1rem;">07:00 - 09:00</h4><p style="color:#666;">Olahraga / PJOK</p></div>
-                <div class="schedule-item" style="border-color:#16a34a;"><h4 style="font-size:1rem;">09:30 - 11:00</h4><p style="color:#666;">Biologi</p></div>
-            </div>
-            <div id="content-rabu" style="display:none; text-align:center; padding:2rem; color:#999;">Jadwal Rabu...</div>
-            <div id="content-kamis" style="display:none; text-align:center; padding:2rem; color:#999;">Jadwal Kamis...</div>
-            <div id="content-jumat" style="display:none; text-align:center; padding:2rem; color:#999;">Jadwal Jumat...</div>
-        </div>
-
-        <div id="page-agenda" class="page">
-            <div class="sub-header"><h3 style="margin-left:0;">Agenda Sekolah</h3></div>
-            <div style="padding-top:1rem;">
-                <div class="agenda-card" style="border-left-color: var(--warning);">
-                    <div class="date-box"><span style="font-size:1.2rem; font-weight:700;">25</span><span style="font-size:0.7rem;">NOV</span></div>
-                    <div style="flex:1;">
-                        <h4 style="font-size:1rem;">Ujian Akhir Semester</h4>
-                        <p style="font-size:0.8rem; color:#666; margin-top:5px;">25 Nov - 3 Des 2025</p>
-                        <span style="font-size:0.7rem; background:#fff7ed; color:#c2410c; padding:3px 8px; border-radius:4px;">Akademik</span>
-                    </div>
+            <div class="materi-card">
+                <div style="background: #e0f2fe; width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #0284c7; font-size: 1.2rem;"><i class="fas fa-calculator"></i></div>
+                <div>
+                    <h4 style="font-size: 1rem;">Matematika</h4>
+                    <p style="font-size: 0.8rem; color: #64748b;">Vektor & Ruang Dimensi</p>
                 </div>
-                <div class="agenda-card" style="border-left-color: var(--danger);">
-                    <div class="date-box"><span style="font-size:1.2rem; font-weight:700; color:var(--danger);">01</span><span style="font-size:0.7rem;">JAN</span></div>
-                    <div style="flex:1;">
-                        <h4 style="font-size:1rem;">Tahun Baru 2026</h4>
-                        <p style="font-size:0.8rem; color:#666; margin-top:5px;">1 Januari 2026</p>
-                        <span style="font-size:0.7rem; background:#fef2f2; color:#ef4444; padding:3px 8px; border-radius:4px;">Libur Nasional</span>
-                    </div>
+            </div>
+            <div class="materi-card">
+                <div style="background: #dcfce7; width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #16a34a; font-size: 1.2rem;"><i class="fas fa-flask"></i></div>
+                <div>
+                    <h4 style="font-size: 1rem;">Kimia Dasar</h4>
+                    <p style="font-size: 0.8rem; color: #64748b;">Stoikiometri</p>
                 </div>
             </div>
         </div>
 
         <div id="page-tugas" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Daftar Tugas</h3></div>
-            <div style="padding:1rem;">
-                <div class="agenda-card" style="border-left-color:#ef4444; margin:0 0 1rem 0;">
-                    <div><h4 style="font-size:1rem;">Fisika Kuantum</h4><p style="font-size:0.8rem; color:#666;">Hal 45 No 1-10</p></div>
+            <div class="sub-header">
+                <div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+                <h3 style="font-size: 1.1rem;">Daftar Tugas</h3>
+            </div>
+
+            <div class="tugas-item">
+                <div style="display: flex; justify-content: space-between;">
+                    <h4>Fisika Kuantum</h4>
+                    <span style="font-size: 0.7rem; background: #fee2e2; color: #dc2626; padding: 2px 8px; border-radius: 5px;">Belum</span>
                 </div>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Kerjakan Halaman 45 No 1-10.</p>
+                <div class="deadline"><i class="far fa-clock"></i> Batas: Hari ini, 23:59</div>
+            </div>
+            <div class="tugas-item" style="border-left-color: #10b981;">
+                <div style="display: flex; justify-content: space-between;">
+                    <h4>Sejarah Islam</h4>
+                    <span style="font-size: 0.7rem; background: #dcfce7; color: #16a34a; padding: 2px 8px; border-radius: 5px;">Selesai</span>
+                </div>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Makalah Daulah Abbasiyah.</p>
+                <div class="deadline" style="color: #10b981;"><i class="fas fa-check"></i> Terkirim</div>
             </div>
         </div>
 
         <div id="page-ujian" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Ujian CBT</h3></div>
-            <div style="padding:1.5rem; text-align:center;">
-                <div style="background:white; padding:2rem; border-radius:16px;">
-                    <h2>Penilaian Harian</h2><p style="color:#666; margin-bottom:1rem;">Bahasa Inggris</p>
-                    <div id="ujian-area"></div>
+            <div class="sub-header">
+                <div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+                <h3 style="font-size: 1.1rem;">Ujian CBT</h3>
+            </div>
+
+            <div class="ujian-day-selector">
+                <div class="day-pill active">Senin</div>
+                <div class="day-pill">Selasa</div>
+                <div class="day-pill">Rabu</div>
+            </div>
+
+            <div class="ujian-card">
+                <h2 style="font-size: 1.2rem; color: var(--secondary);">Penilaian Harian</h2>
+                <p style="color: #64748b; font-size: 0.9rem;">Mapel: Bahasa Inggris</p>
+                
+                <div id="ujian-status-area"></div>
+            </div>
+        </div>
+
+        <div id="page-jadwal" class="page">
+            <div class="sub-header">
+                <div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+                <h3 style="font-size: 1.1rem;">Jadwal Pelajaran</h3>
+            </div>
+
+            <div style="display: flex; padding: 1rem 1.5rem; gap: 1rem;">
+                <button onclick="switchJadwal('senin')" class="day-pill active" id="btn-senin">Senin</button>
+                <button onclick="switchJadwal('selasa')" class="day-pill" id="btn-selasa">Selasa</button>
+            </div>
+
+            <div id="jadwal-senin" class="jadwal-wrapper">
+                <div class="jadwal-item">
+                    <h4 style="font-size: 1rem;">07:00 - 08:30</h4>
+                    <p style="font-weight: 600;">Upacara Bendera</p>
+                </div>
+                <div class="jadwal-item">
+                    <h4 style="font-size: 1rem;">08:30 - 10:00</h4>
+                    <p style="font-weight: 600;">Matematika Wajib</p>
+                </div>
+            </div>
+
+            <div id="jadwal-selasa" class="jadwal-wrapper" style="display: none;">
+                <div class="jadwal-item" style="border-color: var(--warning);">
+                    <h4 style="font-size: 1rem;">07:00 - 09:00</h4>
+                    <p style="font-weight: 600;">PJOK / Olahraga</p>
                 </div>
             </div>
         </div>
 
         <div id="page-rapor" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Rapor Semester</h3></div>
+            <div class="sub-header">
+                <div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+                <h3 style="font-size: 1.1rem;">Hasil Studi</h3>
+            </div>
             <div class="rapor-paper">
-                <div style="text-align:center; border-bottom:3px double #000; padding-bottom:1rem; margin-bottom:1rem;">
-                    <h2 style="font-family:'Noto Serif';">MAN 6 JAKARTA</h2>
-                    <p style="font-size:0.7rem;">Jl. Taruna Jaya, Cibubur</p>
+                <div class="kop-surat">
+                    <h2 style="font-family: 'Noto Serif', serif;">MAN 6 JAKARTA</h2>
+                    <p style="font-size: 0.7rem;">Jl. Taruna Jaya, Cibubur, Jakarta Timur</p>
                 </div>
-                <p style="font-size:0.85rem;">Nama: Ahmad Fauzi <br> Kelas: XII MIPA 1</p>
+                <p style="font-size:0.8rem;"><b>Nama:</b> Ahmad Fauzi <br> <b>Kelas:</b> XII MIPA 1</p>
                 <table class="rapor-table">
-                    <thead><tr><th>Mapel</th><th>Nilai</th><th>Pred</th></tr></thead>
+                    <thead>
+                        <tr><th>Mapel</th><th>Nilai</th><th>Pred</th></tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Matematika</td><td>92</td><td>A</td></tr>
-                        <tr><td>Fisika</td><td>88</td><td>B+</td></tr>
-                        <tr><td>Kimia</td><td>85</td><td>B</td></tr>
+                        <tr><td>Matematika</td><td>85</td><td>B</td></tr>
+                        <tr><td>Fisika</td><td>90</td><td>A</td></tr>
+                        <tr><td>Kimia</td><td>82</td><td>B</td></tr>
+                        <tr><td>Biologi</td><td>94</td><td>A</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <div id="page-absen" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Riwayat Absensi</h3></div>
-            <div class="absen-stat">
-                <div class="stat-box"><h3 style="color:var(--success);">14</h3><p style="font-size:0.7rem;">Hadir</p></div>
-                <div class="stat-box"><h3 style="color:var(--warning);">1</h3><p style="font-size:0.7rem;">Izin</p></div>
-                <div class="stat-box"><h3 style="color:var(--danger);">0</h3><p style="font-size:0.7rem;">Alpha</p></div>
-            </div>
-            <div style="padding:0 1.5rem;">
-                <div class="history-item"><div><p style="font-weight:600;">Senin, 20 Nov</p><p style="font-size:0.8rem;">06:45 WIB</p></div><span style="background:#dcfce7; color:#16a34a; padding:4px 10px; border-radius:10px; font-size:0.8rem;">Hadir</span></div>
-                <div class="history-item"><div><p style="font-weight:600;">Jumat, 17 Nov</p><p style="font-size:0.8rem;">-</p></div><span style="background:#fef9c3; color:#ca8a04; padding:4px 10px; border-radius:10px; font-size:0.8rem;">Izin</span></div>
+        <div id="page-blog" class="page">
+            <div class="blog-back-btn" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+            <img id="blog-img" src="" class="blog-hero" alt="Blog">
+            <div class="blog-container">
+                <span id="blog-cat" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 50px; font-size: 0.7rem;">Kategori</span>
+                <h1 id="blog-title" style="font-size: 1.4rem; font-weight: 700; color: var(--secondary); margin: 1rem 0;">Judul</h1>
+                <div id="blog-content" style="line-height: 1.8; color: #475569;">Isi Berita...</div>
             </div>
         </div>
 
-        <div id="page-blog" class="page">
-            <div class="blog-back-btn" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
-            <img id="blog-img" src="" class="blog-hero">
-            <div class="blog-container">
-                <span id="blog-cat" style="background:var(--primary); color:white; padding:4px 10px; border-radius:50px; font-size:0.7rem;">Info</span>
-                <h1 id="blog-title" style="font-size:1.4rem; font-weight:700; color:var(--secondary); margin:1rem 0;">Judul</h1>
-                <div id="blog-content" style="line-height:1.8; color:#475569;"></div>
+        <div id="page-pesan" class="page">
+            <div class="sub-header">
+                <div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+                <h3>Pesan</h3>
+            </div>
+            <div style="padding: 2rem; text-align: center;">
+                <i class="fas fa-tools" style="font-size: 3rem; color: #cbd5e1;"></i>
+                <p style="margin-top: 1rem; color: #64748b;">Fitur sedang dalam pengembangan.</p>
+            </div>
+        </div>
+        <div id="page-riwayat" class="page">
+            <div class="sub-header">
+                <div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+                <h3>Riwayat Absen</h3>
+            </div>
+            <div style="padding: 2rem; text-align: center;">
+                <i class="fas fa-history" style="font-size: 3rem; color: #cbd5e1;"></i>
+                <p style="margin-top: 1rem; color: #64748b;">Riwayat absensi akan muncul di sini.</p>
             </div>
         </div>
 
         <div id="page-akun" class="page">
-            <div style="background:white; padding:2rem; text-align:center; border-radius:0 0 30px 30px;">
-                <div style="width:80px; height:80px; background:var(--primary); border-radius:50%; margin:0 auto 1rem; display:flex; align-items:center; justify-content:center; color:white; font-size:2rem;">AF</div>
-                <h2>Ahmad Fauzi</h2><p>NISN: 006712882</p>
+            <div class="account-header">
+                <div class="profile-pic">AF</div>
+                <h2 style="font-size: 1.4rem; color: var(--secondary);">Ahmad Fauzi</h2>
+                <p style="color: var(--primary); font-size: 0.9rem;">NISN 006712882</p>
             </div>
             <div class="digital-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:2rem;"><span>MAN 6 JKT</span><i class="fas fa-wifi" style="transform:rotate(90deg);"></i></div>
-                <h2 style="font-family:monospace; letter-spacing:2px;">0067 1288 2391</h2>
+                <div style="display:flex; justify-content:space-between; margin-bottom:2rem;">
+                    <span>MAN 6 JKT</span> <i class="fas fa-wifi" style="transform: rotate(90deg);"></i>
+                </div>
+                <h2 style="font-family: monospace; letter-spacing: 2px; font-size: 1.3rem;">0067 1288 2391</h2>
+                <p style="font-size:0.8rem; margin-top:1rem; opacity:0.8;">AHMAD FAUZI</p>
             </div>
-            <div style="margin:1.5rem; background:white; border-radius:10px;">
-                <div style="padding:1rem; border-bottom:1px solid #eee;" onclick="goToPage('page-home')">Kembali ke Home</div>
-                <div style="padding:1rem; color:red;">Keluar</div>
+            <div style="margin: 0 1.5rem;">
+                <div class="settings-item" style="border-radius: 10px 10px 0 0;">
+                    <span>Edit Profil</span> <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="settings-item" style="border-radius: 0 0 10px 10px;">
+                    <span style="color: red;">Keluar</span> <i class="fas fa-sign-out-alt" style="color: red;"></i>
+                </div>
             </div>
-        </div>
-        
-        <div id="page-pesan" class="page">
-             <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Pesan</h3></div>
-             <div style="padding:2rem; text-align:center; color:#999;">Belum ada pesan.</div>
         </div>
 
         <div class="overlay" id="overlay"></div>
-        <div class="popup" id="popup-qr">
-            <h3 style="text-align:center;">Scan Absensi</h3>
-            <div style="text-align:center; margin:1.5rem 0; border:2px dashed var(--primary); padding:10px; border-radius:10px; display:inline-block; width:100%;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=NISN:006712882" width="150">
-            </div>
-            <button onclick="togglePopup('popup-qr', false)" style="width:100%; padding:1rem; background:var(--primary); color:white; border:none; border-radius:10px;">Tutup</button>
-        </div>
         
-        <div class="popup" id="popup-lainnya">
-            <h3 style="text-align:center; margin-bottom:1rem;">Menu Lainnya</h3>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; text-align:center;">
-                <div style="background:#eee; padding:1rem; border-radius:10px; opacity:0.5;"><i class="fas fa-heartbeat"></i> UKS</div>
-                <div style="background:#eee; padding:1rem; border-radius:10px; opacity:0.5;"><i class="fas fa-utensils"></i> Kantin</div>
+        <div class="bottom-sheet" id="popup-qr">
+            <div style="text-align: center;">
+                <h3>Scan Absensi</h3>
+                <div style="margin: 1.5rem 0; border: 2px dashed var(--primary); display: inline-block; padding: 10px; border-radius: 10px;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=NISN:006712882" width="150">
+                </div>
+                <h2>Ahmad Fauzi</h2>
+                <button onclick="togglePopup('popup-qr', false)" style="width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 10px; margin-top: 10px;">Tutup</button>
             </div>
-            <button onclick="togglePopup('popup-lainnya', false)" style="width:100%; padding:1rem; background:#333; color:white; border:none; border-radius:10px; margin-top:1rem;">Tutup</button>
+        </div>
+
+        <div class="bottom-sheet" id="popup-lainnya">
+            <h3 style="text-align: center; margin-bottom: 1rem;">Menu Lainnya</h3>
+            <div class="menu-grid">
+                <div class="menu-item" style="opacity: 0.5;"><div class="icon-box bg-red"><i class="fas fa-heartbeat"></i></div><span>UKS</span></div>
+                <div class="menu-item" style="opacity: 0.5;"><div class="icon-box bg-yellow"><i class="fas fa-utensils"></i></div><span>Kantin</span></div>
+                <div class="menu-item" style="opacity: 0.5;"><div class="icon-box bg-blue"><i class="fas fa-bus"></i></div><span>Bus</span></div>
+                <div class="menu-item" style="opacity: 0.5;"><div class="icon-box bg-purple"><i class="fas fa-comments"></i></div><span>BK</span></div>
+            </div>
+            <button onclick="togglePopup('popup-lainnya', false)" style="width: 100%; padding: 1rem; background: #eee; border: none; border-radius: 10px; margin-top: 10px;">Tutup</button>
         </div>
 
         <nav class="bottom-nav">
             <a href="#" onclick="goToPage('page-home')" class="nav-item active" id="nav-home"><i class="fas fa-home"></i><span>Home</span></a>
-            <a href="#" onclick="goToPage('page-agenda')" class="nav-item" id="nav-agenda"><i class="fas fa-calendar-day"></i><span>Agenda</span></a>
+            <a href="#" onclick="goToPage('page-jadwal')" class="nav-item"><i class="fas fa-calendar"></i><span>Agenda</span></a>
             <div class="fab-wrapper" onclick="togglePopup('popup-qr', true)"><div class="fab"><i class="fas fa-qrcode"></i></div></div>
             <a href="#" onclick="goToPage('page-pesan')" class="nav-item" id="nav-pesan"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
             <a href="#" onclick="goToPage('page-akun')" class="nav-item" id="nav-akun"><i class="fas fa-user"></i><span>Akun</span></a>
@@ -441,104 +524,80 @@
     </div>
 
     <script>
-        // DATABASE MATERI
-        const subjectData = {
-            'matematika': {
-                title: "Matematika",
-                chapters: [
-                    {title: "Bab 1: Eksponen", content: "<p>Eksponen adalah perkalian berulang. <b>a^n = a x a x ...</b></p>"},
-                    {title: "Bab 2: Vektor", content: "<p>Vektor memiliki besar dan arah.</p>"}
-                ]
-            },
-            'fisika': {
-                title: "Fisika",
-                chapters: [
-                    {title: "Bab 1: Kinematika", content: "<p>Gerak lurus beraturan (GLB) memiliki kecepatan konstan.</p>"}
-                ]
-            },
-            'kimia': { title: "Kimia", chapters: [{title:"Bab 1: Atom", content:"Atom adalah partikel terkecil."}] },
-            'biologi': { title: "Biologi", chapters: [{title:"Bab 1: Sel", content:"Sel adalah unit terkecil kehidupan."}] }
-        };
+        // 1. CONFIG UJIAN (UBAH KE 'ON' UNTUK MENGAKTIFKAN)
+        const STATUS_UJIAN = 'OFF'; 
 
-        // DATABASE BLOG
+        // 2. DATABASE PENGUMUMAN
         const blogData = {
-            'libur': { title: "Libur Puasa", cat: "Info", img: "https://images.unsplash.com/photo-1615818490564-267f5125d744?w=600", content: "Libur dilaksanakan tanggal 11-13 Maret 2025." },
-            'futsal': { title: "Juara 1 Futsal", cat: "Prestasi", img: "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=600", content: "Selamat kepada tim Futsal MAN 6!" }
+            'libur': { title: "Libur Awal Puasa", date: "10 Mar 2025", cat: "Akademik", img: "https://images.unsplash.com/photo-1615818490564-267f5125d744?w=600", content: "Libur awal puasa dilaksanakan tanggal 11-13 Maret 2025." },
+            'futsal': { title: "Juara 1 Futsal", date: "25 Feb 2025", cat: "Prestasi", img: "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=600", content: "Selamat kepada tim futsal MAN 6 Jakarta atas kemenangannya!" }
         };
 
-        let currentSubject = '';
-        const STATUS_UJIAN = 'OFF'; // Ganti ON untuk mengaktifkan
-
-        // NAVIGASI UTAMA
-        function goToPage(id) {
+        // 3. NAVIGASI HALAMAN (CORE SYSTEM)
+        function goToPage(pageId) {
+            // Sembunyikan semua halaman
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
+            // Tampilkan halaman tujuan
+            const target = document.getElementById(pageId);
+            if(target) target.classList.add('active');
+
+            // Update Bottom Nav Style
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if(id === 'page-home') document.getElementById('nav-home').classList.add('active');
-            if(id === 'page-agenda') document.getElementById('nav-agenda').classList.add('active');
-            if(id === 'page-akun') document.getElementById('nav-akun').classList.add('active');
-            if(id === 'page-pesan') document.getElementById('nav-pesan').classList.add('active');
+            if(pageId === 'page-home') document.getElementById('nav-home').classList.add('active');
+            if(pageId === 'page-pesan') document.getElementById('nav-pesan').classList.add('active');
+            if(pageId === 'page-akun') document.getElementById('nav-akun').classList.add('active');
+            
             window.scrollTo(0,0);
         }
 
-        // LOGIC MATERI
-        function openSubject(id) {
-            currentSubject = id;
-            const data = subjectData[id];
-            document.getElementById('subject-title').innerText = data.title;
-            const container = document.getElementById('chapter-container');
-            container.innerHTML = '';
-            data.chapters.forEach((chap, index) => {
-                const div = document.createElement('div');
-                div.className = 'chapter-card';
-                div.innerHTML = <div><h4>${chap.title}</h4><p>Klik untuk baca</p></div><i class="fas fa-chevron-right"></i>;
-                div.onclick = () => openLesson(index);
-                container.appendChild(div);
-            });
-            goToPage('page-materi-chapters');
-        }
-
-        function openLesson(index) {
-            const data = subjectData[currentSubject].chapters[index];
-            document.getElementById('lesson-title').innerText = data.title;
-            document.getElementById('lesson-content').innerHTML = data.content;
-            goToPage('page-materi-read');
-        }
-
-        // LOGIC JADWAL
-        function switchDay(day, el) {
-            document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('active'));
-            el.classList.add('active');
-            document.querySelectorAll('[id^="content-"]').forEach(c => c.style.display = 'none');
-            const target = document.getElementById('content-' + day);
-            if(target) target.style.display = 'block';
-        }
-
-        // LOGIC BLOG
+        // 4. LOGIC BUKA PENGUMUMAN
         function openAnnouncement(id) {
             const data = blogData[id];
             document.getElementById('blog-img').src = data.img;
-            document.getElementById('blog-title').innerText = data.title;
             document.getElementById('blog-cat').innerText = data.cat;
+            document.getElementById('blog-title').innerText = data.title;
             document.getElementById('blog-content').innerText = data.content;
             goToPage('page-blog');
         }
 
-        // LOGIC POPUP
+        // 5. LOGIC UJIAN
+        const ujianArea = document.getElementById('ujian-status-area');
+        if(STATUS_UJIAN === 'ON') {
+            ujianArea.innerHTML = `<button class="btn-start-ujian" onclick="alert('Masuk Ujian...')">MULAI UJIAN</button>`;
+        } else {
+            ujianArea.innerHTML = `<div class="ujian-status-off"><i class="fas fa-lock"></i> Ujian Belum Dimulai</div>`;
+        }
+
+        // 6. LOGIC JADWAL TAB
+        function switchJadwal(hari) {
+            document.querySelectorAll('.day-pill').forEach(b => b.classList.remove('active'));
+            document.getElementById('jadwal-senin').style.display = 'none';
+            document.getElementById('jadwal-selasa').style.display = 'none';
+
+            if(hari === 'senin') {
+                document.getElementById('btn-senin').classList.add('active');
+                document.getElementById('jadwal-senin').style.display = 'block';
+            } else {
+                document.getElementById('btn-selasa').classList.add('active');
+                document.getElementById('jadwal-selasa').style.display = 'block';
+            }
+        }
+
+        // 7. POPUP
         function togglePopup(id, show) {
             const overlay = document.getElementById('overlay');
             const popup = document.getElementById(id);
-            if(show) { overlay.classList.add('active'); popup.classList.add('active'); }
-            else { overlay.classList.remove('active'); popup.classList.remove('active'); }
+            if(show) {
+                overlay.classList.add('active');
+                popup.classList.add('active');
+                overlay.onclick = () => togglePopup(id, false);
+            } else {
+                overlay.classList.remove('active');
+                popup.classList.remove('active');
+            }
         }
-
-        // INIT UJIAN
-        const ujianArea = document.getElementById('ujian-area');
-        if(STATUS_UJIAN === 'ON') ujianArea.innerHTML = '<button style="width:100%; padding:1rem; background:blue; color:white; border:none; border-radius:10px;">MULAI UJIAN</button>';
-        else ujianArea.innerHTML = '<div style="background:#fee2e2; color:red; padding:1rem; border-radius:10px; font-weight:bold;">Ujian Belum Dimulai</div>';
-
     </script>
+
     
     <script>
         // --- CONFIG FIREBASE ---
