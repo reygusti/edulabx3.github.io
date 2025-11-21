@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard - MAN6 EDU Lab</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Serif:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        /* CSS UTAMA */
+        :root { --primary: #3b82f6; --secondary: #0f172a; --bg: #f1f5f9; --card: #fff; --app-width: 480px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #cbd5e1; display: flex; justify-content: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: var(--app-width); background: var(--bg); min-height: 100vh; position: relative; padding-bottom: 90px; display: none; }
+        
+        /* Loading */
+        #loader { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #eee; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Pages */
+        .page { display: none; animation: fade 0.3s; } .page.active { display: block; } @keyframes fade { from{opacity:0}to{opacity:1} }
+        
+        /* Header */
+        .home-header { background: linear-gradient(135deg, var(--secondary), var(--primary)); padding: 3rem 1.5rem 4rem; border-radius: 0 0 35px 35px; color: white; }
+        .status-card { background: white; margin: -40px 1.5rem 1.5rem; padding: 1rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); display: flex; justify-content: space-between; position: relative; z-index: 10; }
+        
+        /* Menu Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem 0.5rem; padding: 0 1.5rem; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; font-size: 0.75rem; }
+        .icon-box { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 8px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        /* Colors */
+        .bg-blue { background: #e0f2fe; color: #0284c7; } .bg-purple { background: #f3e8ff; color: #9333ea; } .bg-orange { background: #ffedd5; color: #ea580c; } 
+        .bg-teal { background: #ccfbf1; color: #0d9488; } .bg-green { background: #dcfce7; color: #16a34a; } .bg-yellow { background: #fef9c3; color: #ca8a04; }
+        .bg-red { background: #fee2e2; color: #dc2626; } .bg-gray { background: #f1f5f9; color: #64748b; }
+
+        /* Subpage Header */
+        .sub-header { background: white; padding: 1.5rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn-back { width: 35px; height: 35px; background: #f1f5f9; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        /* Content Elements */
+        .mapel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem 1.5rem; }
+        .mapel-card { background: white; padding: 1.5rem; border-radius: 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
+        .chapter-card { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 12px; border-left: 4px solid var(--primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .lesson-container { padding: 1.5rem; background: white; min-height: 80vh; border-radius: 20px 20px 0 0; margin-top: 10px; }
+        .lesson-body { font-family: 'Noto Serif', serif; line-height: 1.8; color: #333; }
+        
+        .schedule-item { background: white; padding: 1rem; margin: 0 1.5rem 1rem; border-radius: 12px; border-left: 4px solid var(--primary); }
+        .day-selector { display: flex; gap: 10px; overflow-x: auto; padding: 1rem 1.5rem; scrollbar-width: none; }
+        .day-pill { padding: 8px 20px; background: white; border: 1px solid #eee; border-radius: 50px; white-space: nowrap; cursor: pointer; }
+        .day-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .agenda-card { background: white; margin: 1rem 1.5rem; padding: 1rem; border-radius: 15px; display: flex; gap: 15px; border-left: 5px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .date-box { min-width: 60px; background: #f8fafc; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px; }
+
+        /* Account */
+        .account-header { background: white; padding: 2rem 1.5rem; text-align: center; border-radius: 0 0 30px 30px; margin-bottom: 1.5rem; }
+        .digital-card { background: linear-gradient(135deg, #0f172a, #334155); color: white; padding: 1.5rem; border-radius: 16px; margin: 0 1.5rem 2rem; position: relative; overflow: hidden; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.3); }
+        
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: var(--app-width); height: 75px; background: white; display: flex; justify-content: space-around; align-items: center; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 900; }
+        .nav-item { color: #94a3b8; display: flex; flex-direction: column; align-items: center; font-size: 1.3rem; width: 60px; gap: 4px; text-decoration: none; }
+        .nav-item span { font-size: 0.65rem; }
+        .nav-item.active { color: var(--primary); }
+        .fab-wrapper { position: relative; top: -25px; }
+        .fab { width: 65px; height: 65px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; border: 6px solid var(--bg); cursor: pointer; }
+
+        /* Popup */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2000; display: none; }
+        .popup { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: var(--app-width); background: white; padding: 2rem; border-radius: 30px 30px 0 0; z-index: 2001; display: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Menghubungkan ke EduLab 6...</p>
+    </div>
+
+    <div class="app-container" id="app">
+        
+        <div id="p-home" class="page active">
+            <header class="home-header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 style="font-size: 1.4rem; font-weight: 700;">Halo, <span id="disp-name">...</span> 👋</h2>
+                        <p style="opacity: 0.9; font-size: 0.9rem;"><span id="disp-class">...</span> • MAN 6 JKT</p>
+                    </div>
+                    <div onclick="go('p-akun')" style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i class="fas fa-user"></i></div>
+                </div>
+            </header>
+
+            <div class="status-card">
+                <div style="flex:1; text-align:center; border-right:1px solid #eee;">
+                    <div style="font-size:0.75rem; color:#94a3b8;">Kehadiran</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:#10b981;">Masuk</div>
+                </div>
+                <div style="flex:1; text-align:center;">
+                    <div style="font-size:0.75rem; color:#94a3b8;">Pulang</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:#0f172a;">15:30</div>
+                </div>
+            </div>
+
+            <h3 style="padding:0 1.5rem; font-size:1.1rem; margin:1.5rem 0 1rem;">Menu Akademik</h3>
+            <div class="menu-grid">
+                <div class="menu-item" onclick="go('p-materi-list')"><div class="icon-box bg-blue"><i class="fas fa-book-open"></i></div>Materi</div>
+                <div class="menu-item" onclick="go('p-tugas')"><div class="icon-box bg-purple"><i class="fas fa-clipboard-check"></i></div>Tugas</div>
+                <div class="menu-item" onclick="go('p-ujian')"><div class="icon-box bg-orange"><i class="fas fa-laptop-code"></i></div>Ujian</div>
+                <div class="menu-item" onclick="go('p-jadwal')"><div class="icon-box bg-teal"><i class="fas fa-calendar-alt"></i></div>Jadwal</div>
+                <div class="menu-item" onclick="alert('Fitur Absen')"><div class="icon-box bg-green"><i class="fas fa-fingerprint"></i></div>Absen</div>
+                <div class="menu-item" onclick="go('p-rapor')"><div class="icon-box bg-yellow"><i class="fas fa-star"></i></div>Rapor</div>
+                <div class="menu-item"><div class="icon-box bg-red"><i class="fas fa-bookmark"></i></div>Perpus</div>
+                <div class="menu-item" onclick="togPop(true)"><div class="icon-box bg-gray"><i class="fas fa-th-large"></i></div>Lainnya</div>
+            </div>
+        </div>
+
+        <div id="p-materi-list" class="page">
+            <div class="sub-header"><div class="btn-back" onclick="go('p-home')"><i class="fas fa-arrow-left"></i></div><h3>Pilih Mapel</h3></div>
+            <div class="mapel-grid">
+                <div class="mapel-card" onclick="openSubject('mtk')"><div class="icon-box bg-blue"><i class="fas fa-calculator"></i></div><h4>Matematika</h4></div>
+                <div class="mapel-card" onclick="openSubject('fis')"><div class="icon-box bg-orange"><i class="fas fa-atom"></i></div><h4>Fisika</h4></div>
+                <div class="mapel-card" onclick="openSubject('kim')"><div class="icon-box bg-green"><i class="fas fa-flask"></i></div><h4>Kimia</h4></div>
+                <div class="mapel-card" onclick="openSubject('bio')"><div class="icon-box bg-purple"><i class="fas fa-dna"></i></div><h4>Biologi</h4></div>
+            </div>
+        </div>
+        <div id="p-chapters" class="page">
+            <div class="sub-header"><div class="btn-back" onclick="go('p-materi-list')"><i class="fas fa-arrow-left"></i></div><h3 id="chap-title">Mapel</h3></div>
+            <div style="padding:1.5rem;" id="chap-list"></div>
+        </div>
+        <div id="p-read" class="page">
+            <div class="sub-header"><div class="btn-back" onclick="go('p-chapters')"><i class="fas fa-arrow-left"></i></div><h3>Belajar</h3></div>
+            <div class="lesson-container">
+                <h1 id="read-title" style="font-size:1.4rem; margin-bottom:1rem;">Judul</h1>
+                <div id="read-content" class="lesson-body"></div>
+            </div>
+        </div>
+
+        <div id="p-jadwal" class="page">
+            <div class="sub-header"><div class="btn-back" onclick="go('p-home')"><i class="fas fa-arrow-left"></i></div><h3>Jadwal</h3></div>
+            <div class="day-selector">
+                <div class="day-pill active" onclick="swDay('sen', this)">Senin</div>
+                <div class="day-pill" onclick="swDay('sel', this)">Selasa</div>
+                <div class="day-pill" onclick="swDay('rab', this)">Rabu</div>
+            </div>
+            <div id="j-sen">
+                <div class="schedule-item"><h4>07:00 - 08:30</h4><p>Upacara</p></div>
+                <div class="schedule-item" style="border-color:#0d9488;"><h4>08:30 - 10:00</h4><p>Matematika</p></div>
+            </div>
+            <div id="j-sel" style="display:none;">
+                <div class="schedule-item" style="border-color:#9333ea;"><h4>07:00 - 09:00</h4><p>Olahraga</p></div>
+            </div>
+            <div id="j-rab" style="display:none; text-align:center; padding:2rem; color:#999;">Jadwal Rabu...</div>
+        </div>
+
+        <div id="p-tugas" class="page">
+            <div class="sub-header"><div class="btn-back" onclick="go('p-home')"><i class="fas fa-arrow-left"></i></div><h3>Tugas</h3></div>
+            <div style="padding:1.5rem;"><div class="agenda-card" style="border-left-color:red;"><div><h4>Fisika Kuantum</h4><p>Hal 45 (Deadline Hari Ini)</p></div></div></div>
+        </div>
+        <div id="p-ujian" class="page">
+            <div class="sub-header"><div class="btn-back" onclick="go('p-home')"><i class="fas fa-arrow-left"></i></div><h3>Ujian</h3></div>
+            <div style="padding:1.5rem; text-align:center;"><div style="background:white; padding:2rem; border-radius:15px;"><h3>Penilaian Harian</h3><p>Bahasa Inggris</p><br><span style="background:#fee2e2; color:red; padding:10px; border-radius:5px;">Belum Mulai</span></div></div>
+        </div>
+        <div id="p-rapor" class="page">
+            <div class="sub-header"><div class="btn-back" onclick="go('p-home')"><i class="fas fa-arrow-left"></i></div><h3>Rapor</h3></div>
+            <div style="margin:1.5rem; background:white; padding:1.5rem; border-radius:10px;">
+                <h3 style="text-align:center; border-bottom:3px double #000; padding-bottom:10px;">MAN 6 JAKARTA</h3>
+                <table style="width:100%; margin-top:1rem; text-align:center;">
+                    <tr><th>Mapel</th><th>Nilai</th></tr>
+                    <tr><td>Matematika</td><td>92</td></tr>
+                    <tr><td>Fisika</td><td>88</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="p-agenda" class="page">
+            <div class="sub-header"><h3>Agenda</h3></div>
+            <div style="padding:1.5rem;">
+                <div class="agenda-card" style="border-left-color:#f59e0b;">
+                    <div class="date-box"><b>25</b><span>NOV</span></div>
+                    <div><h4>UAS Sem 1</h4><p style="font-size:0.8rem; color:#666;">25 Nov - 3 Des 2025</p></div>
+                </div>
+                <div class="agenda-card" style="border-left-color:#ef4444;">
+                    <div class="date-box"><b style="color:red;">01</b><span>JAN</span></div>
+                    <div><h4>Tahun Baru</h4><p style="font-size:0.8rem; color:#666;">Libur Nasional</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="p-akun" class="page">
+            <div class="account-header">
+                <div style="width:80px; height:80px; background:#3b82f6; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; color:white; font-size:2rem;" id="acc-initial">A</div>
+                <h2 id="acc-name">Memuat...</h2>
+                <p id="acc-nisn" style="color:#3b82f6;">...</p>
+            </div>
+            <div class="digital-card">
+                <div style="display:flex; justify-content:space-between; margin-bottom:2rem;"><span>MAN 6 JKT</span><i class="fas fa-wifi" style="transform:rotate(90deg);"></i></div>
+                <h2 style="font-family:monospace; letter-spacing:2px;" id="card-nisn">0000 0000</h2>
+                <p style="font-size:0.8rem; margin-top:1rem; opacity:0.8;" id="card-name">SISWA</p>
+            </div>
+            <div style="margin:1.5rem; background:white; border-radius:10px;">
+                <div style="padding:1rem; border-bottom:1px solid #eee;" onclick="go('p-home')">Kembali ke Home</div>
+                <div style="padding:1rem; color:red; cursor:pointer;" onclick="doLogout()">Keluar Akun</div>
+            </div>
+        </div>
+
+        <div class="overlay" id="ov"></div>
+        <div class="popup" id="pop-qr">
+            <h3>Scan Absensi</h3>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=MAN6" style="margin:1rem;">
+            <br><button onclick="togPop(false)" style="width:100%; padding:10px; background:#3b82f6; color:white; border:none; border-radius:10px;">Tutup</button>
+        </div>
+        <div class="popup" id="pop-menu">
+            <h3>Menu Lainnya</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem;">
+                <div style="background:#eee; padding:1rem; border-radius:10px;">UKS</div>
+                <div style="background:#eee; padding:1rem; border-radius:10px;">Kantin</div>
+            </div>
+            <button onclick="togPop(false)" style="padding:10px 20px; background:#333; color:white; border:none; border-radius:10px;">Tutup</button>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="#" onclick="go('p-home')" class="nav-item active" id="nav-home"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="#" onclick="go('p-agenda')" class="nav-item" id="nav-agenda"><i class="fas fa-calendar-day"></i><span>Agenda</span></a>
+            <div class="fab-wrapper" onclick="qrPop()"><div class="fab"><i class="fas fa-qrcode"></i></div></div>
+            <a href="#" class="nav-item" onclick="alert('Pesan')"><i class="fas fa-comment-dots"></i><span>Pesan</span></a>
+            <a href="#" onclick="go('p-akun')" class="nav-item" id="nav-akun"><i class="fas fa-user"></i><span>Akun</span></a>
+        </nav>
+    </div>
+
+    <script>
+        // --- CONFIG FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNy2zpRlfuHxklRG1WQmG0jqx-i6Vfm-E",
+            authDomain: "edulab-6.firebaseapp.com",
+            projectId: "edulab-6",
+            storageBucket: "edulab-6.firebasestorage.app",
+            messagingSenderId: "459580290328",
+            appId: "1:459580290328:web:bdd9e42e221b76aba31a6d",
+            measurementId: "G-11JB5DXPS5"
+        };
+
+        // Init Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Logic Auth & Data
+        auth.onAuthStateChanged(user => {
+            if(user) {
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if(doc.exists) {
+                        const d = doc.data();
+                        // Update UI
+                        document.getElementById('disp-name').innerText = d.nama;
+                        document.getElementById('disp-class').innerText = d.kelas;
+                        document.getElementById('acc-name').innerText = d.nama;
+                        document.getElementById('acc-nisn').innerText = "NISN: " + d.nisn;
+                        document.getElementById('acc-initial').innerText = d.nama.charAt(0);
+                        document.getElementById('card-name').innerText = d.nama.toUpperCase();
+                        document.getElementById('card-nisn').innerText = d.nisn;
+                        
+                        // Show App
+                        document.getElementById('loader').style.display = 'none';
+                        document.getElementById('app').style.display = 'block';
+                    } else {
+                        alert("Data siswa belum ada di database!");
+                        // Fallback UI agar tidak blank
+                        document.getElementById('loader').style.display = 'none';
+                        document.getElementById('app').style.display = 'block';
+                    }
+                }).catch(e => {
+                    console.error(e);
+                    alert("Gagal ambil data: " + e.message);
+                });
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // Logout
+        window.doLogout = () => {
+            if(confirm("Keluar Akun?")) auth.signOut();
+        }
+
+        // Navigasi
+        window.go = (id) => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(id==='p-home') document.getElementById('nav-home').classList.add('active');
+            if(id==='p-agenda') document.getElementById('nav-agenda').classList.add('active');
+            if(id==='p-akun') document.getElementById('nav-akun').classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        // Data Materi
+        const subjects = {
+            'mtk': { title: "Matematika", ch: [{t:"Bab 1: Eksponen", c:"<p>Eksponen adalah...</p>"}, {t:"Bab 2: Vektor", c:"<p>Vektor adalah...</p>"}]},
+            'fis': { title: "Fisika", ch: [{t:"Bab 1: Kinematika", c:"<p>Gerak lurus...</p>"}]},
+            'kim': { title: "Kimia", ch: [{t:"Bab 1: Atom", c:"<p>Atom adalah...</p>"}]},
+            'bio': { title: "Biologi", ch: [{t:"Bab 1: Sel", c:"<p>Sel adalah unit terkecil...</p>"}]}
+        };
+        let curSub = '';
+
+        window.openSubject = (key) => {
+            curSub = key;
+            document.getElementById('chap-title').innerText = subjects[key].title;
+            const list = document.getElementById('chap-list');
+            list.innerHTML = '';
+            subjects[key].ch.forEach((c, i) => {
+                list.innerHTML += `<div class="chapter-card" onclick="readLesson(${i})"><b>${c.t}</b><i class="fas fa-chevron-right"></i></div>`;
+            });
+            go('p-chapters');
+        }
+
+        window.readLesson = (idx) => {
+            const l = subjects[curSub].ch[idx];
+            document.getElementById('read-title').innerText = l.t;
+            document.getElementById('read-content').innerHTML = l.c;
+            go('p-read');
+        }
+
+        // Jadwal
+        window.swDay = (day, el) => {
+            document.querySelectorAll('.day-pill').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            ['j-sen','j-sel','j-rab'].forEach(id => document.getElementById(id).style.display='none');
+            document.getElementById('j-'+day).style.display='block';
+        }
+
+        // Popups
+        window.togPop = (show) => {
+            document.getElementById('ov').style.display = show ? 'block' : 'none';
+            document.getElementById('pop-menu').style.display = show ? 'block' : 'none';
+        }
+        window.qrPop = () => {
+            document.getElementById('ov').style.display = 'block';
+            document.getElementById('pop-qr').style.display = 'block';
+        }
+        // Close all popups on overlay click
+        document.getElementById('ov').onclick = () => {
+            document.getElementById('ov').style.display = 'none';
+            document.getElementById('pop-menu').style.display = 'none';
+            document.getElementById('pop-qr').style.display = 'none';
+        };
+
+    </script>
+</body>
+</html>
