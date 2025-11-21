@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MAN6 EDU Lab - Dashboard</title>
+    <title>MAN6 EDU Lab - Final Version</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;600&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,23 +13,33 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <style>
-        /* --- STYLES (Sama seperti desain final) --- */
+        /* --- VARIABLES & RESET --- */
         :root {
-            --primary: #3b82f6; --secondary: #0f172a; --bg: #f1f5f9; --card: #ffffff;
-            --app-width: 480px; --danger: #ef4444; --success: #10b981; --warning: #f59e0b;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #0f172a;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #334155;
+            --app-width: 480px;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
         body { background-color: #cbd5e1; display: flex; justify-content: center; min-height: 100vh; }
 
-        /* Container App */
+        /* --- APP CONTAINER --- */
         .app-container {
             width: 100%; max-width: var(--app-width); background-color: var(--bg);
             min-height: 100vh; position: relative; overflow-x: hidden;
             box-shadow: 0 0 20px rgba(0,0,0,0.1); padding-bottom: 90px;
-            display: none; /* Hidden saat loading */
+            display: none; /* Hidden sampai loading selesai */
         }
 
-        /* Loading Screen */
+        /* LOADING SCREEN */
         #loading-screen {
             position: fixed; inset: 0; background: white; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -41,50 +51,153 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Page System */
+        /* --- PAGE TRANSITIONS --- */
         .page { display: none; animation: fadeIn 0.3s ease; padding-bottom: 20px; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Header & Components */
-        .home-header { background: linear-gradient(135deg, var(--secondary), var(--primary)); padding: 3rem 1.5rem 5rem 1.5rem; border-radius: 0 0 35px 35px; color: white; position: relative; overflow: hidden; }
-        .home-header::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-        
-        .status-card { background: var(--card); margin: -55px 1.5rem 1.5rem 1.5rem; padding: 1rem; border-radius: 20px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); display: flex; justify-content: space-between; position: relative; z-index: 10; }
-        
-        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem 0.5rem; padding: 0 1.5rem 2rem 1.5rem; }
-        .menu-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; text-align: center; }
-        .icon-box { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 8px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        
-        /* Colors */
-        .bg-blue { background: #e0f2fe; color: #0284c7; } .bg-purple { background: #f3e8ff; color: #9333ea; } .bg-orange { background: #ffedd5; color: #ea580c; } .bg-teal { background: #ccfbf1; color: #0d9488; }
-        .bg-green { background: #dcfce7; color: #16a34a; } .bg-yellow { background: #fef9c3; color: #ca8a04; } .bg-red { background: #fee2e2; color: #dc2626; } .bg-gray { background: #f1f5f9; color: #64748b; }
+        /* --- HEADER STYLES --- */
+        .home-header {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            padding: 3rem 1.5rem 5rem 1.5rem;
+            border-bottom-left-radius: 35px; border-bottom-right-radius: 35px;
+            color: white; position: relative; overflow: hidden;
+        }
+        .home-header::before {
+            content: ''; position: absolute; top: -50px; right: -50px;
+            width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;
+        }
 
-        /* Sub Components */
-        .sub-header { background: var(--card); padding: 1.5rem; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        /* --- SUB HEADER (BACK BUTTON) --- */
+        .sub-header {
+            background: var(--card); padding: 1.5rem; position: sticky; top: 0; z-index: 100;
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
         .btn-back { width: 35px; height: 35px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        
-        .mapel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem 1.5rem; }
-        .mapel-card { background: white; padding: 1.5rem; border-radius: 16px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; }
-        .chapter-card { background: white; padding: 1.2rem; margin-bottom: 1rem; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; border-left: 4px solid var(--primary); }
-        .lesson-container { padding: 1.5rem; background: white; min-height: 80vh; border-radius: 20px 20px 0 0; margin-top: 10px; }
-        
-        .agenda-card { background: white; margin: 1rem 1.5rem; padding: 1.2rem; border-radius: 16px; display: flex; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid #ccc; }
-        .date-box { min-width: 60px; text-align: center; background: #f8fafc; border-radius: 10px; padding: 5px; display: flex; flex-direction: column; justify-content: center; }
-        
-        .account-header { background: var(--card); padding: 2rem 1.5rem; text-align: center; border-radius: 0 0 30px 30px; margin-bottom: 1.5rem; }
-        .digital-card { background: linear-gradient(135deg, #0f172a, #334155); color: white; border-radius: 16px; padding: 1.2rem; margin: 0 1.5rem 2rem 1.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4); }
-        
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: var(--app-width); height: 75px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 900; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { color: #94a3b8; display: flex; flex-direction: column; align-items: center; font-size: 1.3rem; gap: 4px; text-decoration: none; width: 60px;}
-        .nav-item.active { color: var(--primary); }
-        .fab-wrapper { position: relative; top: -25px; }
-        .fab { width: 65px; height: 65px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; border: 6px solid var(--bg); box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer; }
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(3px); }
-        .overlay.active { opacity: 1; visibility: visible; }
-        .popup { position: fixed; bottom: -100%; left: 50%; transform: translateX(-50%); width: 100%; max-width: var(--app-width); background: white; padding: 2rem; border-radius: 30px 30px 0 0; z-index: 2001; transition: 0.4s; }
-        .popup.active { bottom: 0; }
+        /* --- STATUS CARD --- */
+        .status-card {
+            background: var(--card); margin: -55px 1.5rem 1.5rem 1.5rem;
+            padding: 1rem; border-radius: 20px;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15);
+            display: flex; justify-content: space-between; position: relative; z-index: 10;
+        }
+        .st-item { flex: 1; text-align: center; }
+        .st-border { border-right: 1px solid #f1f5f9; }
+        .st-val { font-size: 1.1rem; font-weight: 700; color: var(--secondary); }
+
+        /* --- PENGUMUMAN SLIDER --- */
+        .anno-section { margin-bottom: 1.5rem; }
+        .anno-header { padding: 0 1.5rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
+        .anno-scroll {
+            display: flex; overflow-x: auto; gap: 1rem; padding: 0 1.5rem 10px 1.5rem; scrollbar-width: none;
+        }
+        .anno-scroll::-webkit-scrollbar { display: none; }
+        
+        .anno-card {
+            min-width: 260px; background: var(--card); padding: 1rem;
+            border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.2s;
+        }
+        .anno-card:active { transform: scale(0.98); }
+        .anno-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+        /* --- MENU GRID --- */
+        .section-title { padding: 0 1.5rem; font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: var(--secondary); }
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem 0.5rem; padding: 0 1.5rem 2rem 1.5rem; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.1s; text-align: center;}
+        .menu-item:active { transform: scale(0.9); }
+        .icon-box { width: 55px; height: 55px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 8px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .menu-text { font-size: 0.75rem; font-weight: 500; }
+
+        /* Warna Icon */
+        .bg-blue { background: #e0f2fe; color: #0284c7; }
+        .bg-purple { background: #f3e8ff; color: #9333ea; }
+        .bg-orange { background: #ffedd5; color: #ea580c; }
+        .bg-teal { background: #ccfbf1; color: #0d9488; }
+        .bg-green { background: #dcfce7; color: #16a34a; }
+        .bg-yellow { background: #fef9c3; color: #ca8a04; }
+        .bg-red { background: #fee2e2; color: #dc2626; }
+        .bg-gray { background: #f1f5f9; color: #64748b; }
+
+        /* --- MATERI STYLES --- */
+        .mapel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem 1.5rem; }
+        .mapel-card {
+            background: white; padding: 1.5rem; border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer;
+        }
+        .chapter-list { padding: 1rem 1.5rem; }
+        .chapter-card {
+            background: white; padding: 1.2rem; margin-bottom: 1rem; border-radius: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; border-left: 4px solid var(--primary);
+        }
+        .lesson-container { padding: 1.5rem; background: white; min-height: 80vh; border-radius: 20px 20px 0 0; margin-top: 10px; }
+        .lesson-body { font-family: 'Noto Serif', serif; line-height: 1.8; color: #334155; }
+        .lesson-box { background: #f1f5f9; padding: 1rem; border-radius: 10px; border-left: 4px solid var(--primary); margin: 1rem 0; font-family: monospace; }
+
+        /* --- AGENDA & JADWAL --- */
+        .agenda-card {
+            background: white; margin: 1rem 1.5rem; padding: 1.2rem; border-radius: 16px;
+            display: flex; gap: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid #ccc;
+        }
+        .date-box {
+            min-width: 60px; text-align: center; display: flex; flex-direction: column;
+            justify-content: center; background: #f8fafc; border-radius: 10px; padding: 5px;
+        }
+        .day-selector { display: flex; gap: 10px; overflow-x: auto; padding: 1rem 1.5rem; scrollbar-width: none; }
+        .day-pill { padding: 8px 20px; background: white; border: 1px solid #eee; border-radius: 50px; white-space: nowrap; cursor: pointer; }
+        .day-pill.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .schedule-item { background: white; padding: 1rem; margin: 0 1.5rem 1rem 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary); }
+
+        /* --- RAPOR & ABSEN --- */
+        .rapor-paper { background: white; margin: 1rem 1.5rem; padding: 2rem 1.5rem; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .rapor-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .rapor-table th, .rapor-table td { border: 1px solid #000; padding: 8px; font-size: 0.85rem; text-align: center; }
+        .rapor-table th { background: #f8fafc; font-weight: 600; }
+        .rapor-table td:first-child { text-align: left; }
+        .absen-stat { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 1rem 1.5rem; }
+        .stat-box { background: white; padding: 1rem; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .history-item { background: white; padding: 1rem; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* --- BLOG DETAIL --- */
+        .blog-hero { width: 100%; height: 250px; object-fit: cover; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
+        .blog-container { padding: 1.5rem; margin-top: -20px; position: relative; z-index: 2; }
+        .blog-back-btn {
+            position: absolute; top: 20px; left: 20px; z-index: 50; width: 40px; height: 40px;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
+
+        /* --- ACCOUNT PAGE --- */
+        .account-header { background: var(--card); padding: 2rem 1.5rem; text-align: center; border-radius: 0 0 30px 30px; margin-bottom: 1.5rem; }
+        .digital-card { background: linear-gradient(135deg, #0f172a, #334155); color: white; padding: 1.2rem; border-radius: 16px; margin: 0 1.5rem 2rem 1.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4); }
+        .settings-item { padding: 1rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; cursor: pointer; background: white; }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; max-width: var(--app-width);
+            height: 75px; background: white; display: flex; justify-content: space-around;
+            align-items: center; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 900; padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item { color: #94a3b8; display: flex; flex-direction: column; align-items: center; font-size: 1.3rem; text-decoration: none; width: 60px; gap: 4px;}
+        .nav-item span { font-size: 0.65rem; font-weight: 500; }
+        .nav-item.active { color: var(--primary); }
+        
+        .fab-wrapper { position: relative; top: -25px; }
+        .fab {
+            width: 65px; height: 65px; background: var(--secondary); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem;
+            border: 6px solid var(--bg); box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer;
+        }
+
+        /* --- POPUP --- */
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; display:none; }
+        .overlay.active { display:block; }
+        .popup { position: fixed; bottom:-100%; left:50%; transform:translateX(-50%); width:100%; max-width:var(--app-width); background:white; padding:2rem; border-radius:30px 30px 0 0; z-index:2001; transition:0.4s; }
+        .popup.active { bottom:0; }
+
     </style>
 </head>
 <body>
@@ -103,9 +216,7 @@
                         <h2 style="font-size: 1.4rem; font-weight: 700;">Halo, <span id="disp-name">...</span> 👋</h2>
                         <p style="opacity: 0.9; font-size: 0.9rem;"><span id="disp-class">...</span> • MAN 6 JKT</p>
                     </div>
-                    <div onclick="goToPage('page-akun')" style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                        <i class="fas fa-user"></i>
-                    </div>
+                    <div onclick="goToPage('page-akun')" style="background: rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i class="fas fa-user"></i></div>
                 </div>
             </header>
 
@@ -120,16 +231,30 @@
                 </div>
             </div>
 
-            <h3 style="padding:0 1.5rem; font-size:1.1rem; font-weight:600; margin:1.5rem 0 1rem; color:#0f172a;">Menu Utama</h3>
+            <div class="anno-section">
+                <div class="anno-header"><h3 style="font-size: 1.1rem; font-weight: 600; color: var(--secondary);">Pengumuman</h3><span style="font-size: 0.8rem; color: var(--primary);">Lihat Semua</span></div>
+                <div class="anno-scroll">
+                    <div class="anno-card" onclick="openAnnouncement('libur')">
+                        <div class="anno-icon" style="background: #fee2e2; color: #dc2626;"><i class="fas fa-bullhorn"></i></div>
+                        <div><h4 style="font-size:0.9rem;">Libur Puasa</h4><p style="font-size:0.75rem; color:#64748b;">11 - 13 Mar 2025</p></div>
+                    </div>
+                    <div class="anno-card" onclick="openAnnouncement('futsal')">
+                        <div class="anno-icon" style="background: #e0f2fe; color: #0284c7;"><i class="fas fa-trophy"></i></div>
+                        <div><h4 style="font-size:0.9rem;">Juara 1 Futsal</h4><p style="font-size:0.75rem; color:#64748b;">Classmeet 2025</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Menu Akademik</h3>
             <div class="menu-grid">
-                <div class="menu-item" onclick="goToPage('page-materi-list')"><div class="icon-box bg-blue"><i class="fas fa-book-open"></i></div><span>Materi</span></div>
-                <div class="menu-item" onclick="goToPage('page-tugas')"><div class="icon-box bg-purple"><i class="fas fa-clipboard-check"></i></div><span>Tugas</span></div>
-                <div class="menu-item" onclick="goToPage('page-ujian')"><div class="icon-box bg-orange"><i class="fas fa-laptop-code"></i></div><span>Ujian</span></div>
-                <div class="menu-item" onclick="goToPage('page-jadwal')"><div class="icon-box bg-teal"><i class="fas fa-calendar-alt"></i></div><span>Jadwal</span></div>
-                <div class="menu-item" onclick="goToPage('page-absen')"><div class="icon-box bg-green"><i class="fas fa-fingerprint"></i></div><span>Absen</span></div>
-                <div class="menu-item" onclick="goToPage('page-rapor')"><div class="icon-box bg-yellow"><i class="fas fa-star"></i></div><span>Rapor</span></div>
-                <div class="menu-item" onclick="alert('Segera Hadir')"><div class="icon-box bg-red"><i class="fas fa-bookmark"></i></div><span>Perpus</span></div>
-                <div class="menu-item" onclick="togglePopup('popup-lainnya', true)"><div class="icon-box bg-gray"><i class="fas fa-th-large"></i></div><span>Lainnya</span></div>
+                <div class="menu-item" onclick="goToPage('page-materi-list')"><div class="icon-box bg-blue"><i class="fas fa-book-open"></i></div><span class="menu-text">Materi</span></div>
+                <div class="menu-item" onclick="goToPage('page-tugas')"><div class="icon-box bg-purple"><i class="fas fa-clipboard-check"></i></div><span class="menu-text">Tugas</span></div>
+                <div class="menu-item" onclick="goToPage('page-ujian')"><div class="icon-box bg-orange"><i class="fas fa-laptop-code"></i></div><span class="menu-text">Ujian</span></div>
+                <div class="menu-item" onclick="goToPage('page-jadwal')"><div class="icon-box bg-teal"><i class="fas fa-calendar-alt"></i></div><span class="menu-text">Jadwal</span></div>
+                <div class="menu-item" onclick="goToPage('page-absen')"><div class="icon-box bg-green"><i class="fas fa-fingerprint"></i></div><span class="menu-text">Absen</span></div>
+                <div class="menu-item" onclick="goToPage('page-rapor')"><div class="icon-box bg-yellow"><i class="fas fa-star"></i></div><span class="menu-text">Rapor</span></div>
+                <div class="menu-item" onclick="alert('Segera Hadir')"><div class="icon-box bg-red"><i class="fas fa-bookmark"></i></div><span class="menu-text">Perpus</span></div>
+                <div class="menu-item" onclick="togglePopup('popup-lainnya', true)"><div class="icon-box bg-gray"><i class="fas fa-th-large"></i></div><span class="menu-text">Lainnya</span></div>
             </div>
         </div>
 
@@ -183,7 +308,7 @@
         </div>
 
         <div id="page-tugas" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Daftar Tugas</h3></div>
+            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Tugas</h3></div>
             <div style="padding:1rem;"><div class="agenda-card" style="border-left-color:#ef4444; margin:0 0 1rem 0;"><div><h4>Fisika Kuantum</h4><p style="font-size:0.8rem; color:#666;">Hal 45 No 1-10 (Deadline Hari Ini)</p></div></div></div>
         </div>
         <div id="page-ujian" class="page">
@@ -193,19 +318,29 @@
         <div id="page-rapor" class="page">
             <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Rapor</h3></div>
             <div class="rapor-paper">
-                <div style="text-align:center; border-bottom:3px double #000; padding-bottom:1rem; margin-bottom:1rem;"><h2 style="font-family:'Noto Serif';">MAN 6 JAKARTA</h2><p style="font-size:0.7rem;">Jl. Taruna Jaya</p></div>
-                <p style="font-size:0.85rem;"><b>Nama:</b> <span id="rapor-name">Siswa</span></p>
+                <div style="text-align:center; border-bottom:3px double #000; padding-bottom:1rem; margin-bottom:1rem;"><h2 style="font-family:'Noto Serif';">MAN 6 JAKARTA</h2></div>
+                <p><b>Nama:</b> <span id="rapor-name">Siswa</span></p>
                 <table class="rapor-table"><thead><tr><th>Mapel</th><th>Nilai</th></tr></thead><tbody><tr><td>Matematika</td><td>92</td></tr><tr><td>Fisika</td><td>88</td></tr></tbody></table>
             </div>
         </div>
         <div id="page-absen" class="page">
-            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Riwayat Absen</h3></div>
+            <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Riwayat</h3></div>
             <div class="absen-stat"><div class="stat-box"><h3 style="color:#10b981;">14</h3><p>Hadir</p></div><div class="stat-box"><h3 style="color:#f59e0b;">1</h3><p>Izin</p></div><div class="stat-box"><h3 style="color:#ef4444;">0</h3><p>Alpha</p></div></div>
             <div style="padding:0 1.5rem;"><div class="history-item"><div><p style="font-weight:600;">Senin, 20 Nov</p><p style="font-size:0.8rem;">06:45 WIB</p></div><span style="background:#dcfce7; font-size:0.8rem; padding:4px 10px; border-radius:10px;">Hadir</span></div></div>
         </div>
         <div id="page-pesan" class="page">
             <div class="sub-header"><div class="btn-back" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div><h3>Pesan</h3></div>
-            <div style="padding:2rem; text-align:center; color:#999;">Tidak ada pesan baru.</div>
+            <div style="padding:2rem; text-align:center; color:#999;">Belum ada pesan.</div>
+        </div>
+
+        <div id="page-blog" class="page">
+            <div class="blog-back-btn" onclick="goToPage('page-home')"><i class="fas fa-arrow-left"></i></div>
+            <img id="blog-img" src="" class="blog-hero">
+            <div class="blog-container">
+                <span id="blog-cat" style="background:var(--primary); color:white; padding:4px 10px; border-radius:50px; font-size:0.7rem;">Info</span>
+                <h1 id="blog-title" style="font-size:1.4rem; font-weight:700; color:var(--secondary); margin:1rem 0;">Judul</h1>
+                <div id="blog-content" style="line-height:1.8; color:#475569;"></div>
+            </div>
         </div>
 
         <div id="page-akun" class="page">
@@ -220,20 +355,22 @@
                 <p style="font-size:0.8rem; margin-top:1rem; opacity:0.8;" id="card-name">SISWA</p>
             </div>
             <div style="margin:1.5rem; background:white; border-radius:10px;">
-                <div style="padding:1rem; border-bottom:1px solid #eee;" onclick="goToPage('page-home')">Kembali ke Home</div>
-                <div style="padding:1rem; color:red; cursor:pointer;" id="btn-logout">Keluar Akun</div>
+                <div class="settings-item" onclick="goToPage('page-home')"><span>Kembali ke Home</span><i class="fas fa-chevron-right"></i></div>
+                <div class="settings-item" style="color:red;" onclick="doLogout()"><span>Keluar Akun</span><i class="fas fa-sign-out-alt"></i></div>
             </div>
         </div>
 
         <div class="overlay" id="overlay"></div>
-        <div class="popup" id="popup-qr">
-            <h3 style="text-align:center;">Scan Absensi</h3>
-            <div style="text-align:center; margin:1.5rem 0; border:2px dashed var(--primary); padding:10px; display:inline-block;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=MAN6EDU" width="150">
+        <div class="bottom-sheet" id="popup-qr">
+            <div style="text-align:center;">
+                <h3>Scan Absensi</h3>
+                <div style="margin:1.5rem 0; border:2px dashed var(--primary); padding:10px; display:inline-block;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=MAN6EDU" width="150">
+                </div>
+                <button onclick="togglePopup('popup-qr', false)" style="width:100%; padding:1rem; background:var(--primary); color:white; border:none; border-radius:10px;">Tutup</button>
             </div>
-            <button onclick="togglePopup('popup-qr', false)" style="width:100%; padding:1rem; background:var(--primary); color:white; border:none; border-radius:10px;">Tutup</button>
         </div>
-        <div class="popup" id="popup-lainnya">
+        <div class="bottom-sheet" id="popup-lainnya">
             <h3 style="text-align:center; margin-bottom:1rem;">Menu Lainnya</h3>
             <div class="menu-grid">
                 <div class="menu-item" style="opacity:0.5"><div class="icon-box bg-red"><i class="fas fa-heartbeat"></i></div><span>UKS</span></div>
@@ -253,7 +390,7 @@
     </div>
 
     <script>
-        // --- CONFIG FIREBASE (DARI ANDA) ---
+        // --- CONFIG FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBNy2zpRlfuHxklRG1WQmG0jqx-i6Vfm-E",
             authDomain: "edulab-6.firebaseapp.com",
@@ -264,7 +401,7 @@
             measurementId: "G-11JB5DXPS5"
         };
 
-        // Inisialisasi
+        // Init Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -272,11 +409,10 @@
         // --- LOGIC DATA ---
         auth.onAuthStateChanged(user => {
             if (user) {
-                // Ambil data profil
                 db.collection('users').doc(user.uid).get().then(doc => {
                     if (doc.exists) {
                         const d = doc.data();
-                        // Bind ke HTML
+                        // Bind Data
                         document.getElementById('disp-name').innerText = d.nama;
                         document.getElementById('disp-class').innerText = d.kelas;
                         document.getElementById('profile-name').innerText = d.nama;
@@ -289,24 +425,24 @@
                         document.getElementById('loading-screen').style.display = 'none';
                         document.getElementById('app-content').style.display = 'block';
                     } else {
-                        alert("Data siswa belum diinput ke Database!");
+                        alert("Data siswa belum diinput di Database!");
                         document.getElementById('loading-screen').style.display = 'none';
                     }
                 }).catch(e => { console.error(e); alert("Gagal load data"); });
             } else {
-                // Jika belum login, kembali ke login.html
                 window.location.href = "login.html";
             }
         });
 
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            if(confirm("Yakin keluar?")) auth.signOut();
-        });
+        window.doLogout = () => {
+            if(confirm("Yakin ingin keluar?")) auth.signOut();
+        }
 
-        // --- NAVIGATION ---
+        // --- NAVIGASI ---
         window.goToPage = (id) => {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(id === 'page-home') document.getElementById('nav-home').classList.add('active');
             if(id === 'page-agenda') document.getElementById('nav-agenda').classList.add('active');
@@ -315,7 +451,7 @@
             window.scrollTo(0,0);
         }
 
-        // --- MATERI LOGIC ---
+        // --- MATERI ---
         const subjectData = {
             'matematika': { title: "Matematika", chapters: [{title: "Bab 1: Eksponen", content: "<p>Eksponen adalah...</p>"}, {title: "Bab 2: Vektor", content: "<p>Vektor adalah...</p>"}] },
             'fisika': { title: "Fisika", chapters: [{title: "Bab 1: Kinematika", content: "<p>Gerak lurus...</p>"}] },
@@ -340,6 +476,19 @@
             document.getElementById('lesson-title').innerText = l.title;
             document.getElementById('lesson-content').innerHTML = l.content;
             goToPage('page-materi-read');
+        }
+
+        // --- BLOG & LAINNYA ---
+        const blogData = {
+            'libur': { t: "Libur Puasa", c: "Libur awal puasa...", i: "https://images.unsplash.com/photo-1615818490564-267f5125d744?w=600" },
+            'futsal': { t: "Juara Futsal", c: "Selamat tim futsal!", i: "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=600" }
+        };
+        window.openAnnouncement = (k) => {
+            const b = blogData[k];
+            document.getElementById('blog-title').innerText = b.t;
+            document.getElementById('blog-content').innerText = b.c;
+            document.getElementById('blog-img').src = b.i;
+            goToPage('page-blog');
         }
 
         window.switchDay = (d, el) => {
