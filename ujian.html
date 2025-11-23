@@ -402,7 +402,7 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-KYpfaeSN0gVBTKlS-
 
         // --- SECURITY ---
         function activateSecurity() {
-            document.addEventListener('fullscreenchange', () => { if(!document.fullscreenElement && isExamActive) lockExam(); });
+         
             document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden' && isExamActive) lockExam(); });
             window.addEventListener('resize', () => { if(isExamActive && Math.abs(window.outerWidth - screen.width) > 50) lockExam(); });
             window.addEventListener('blur', () => { if(isExamActive) lockExam(); });
@@ -456,5 +456,6 @@ document.onkeydown = function(e) {
     </script>
 </body>
 </html>
+
 
 
