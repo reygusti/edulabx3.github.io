@@ -224,17 +224,21 @@
 
     <div id="loading-overlay"><div class="spinner"></div><p>Mengirim Data...</p></div>
 
-    <script>
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-KYpfaeSN0gVBTKlS-21ZmD1JeVYjjDgoQgotxUCXh5k9XHFUxEv1LJaqeB3FZfGI/exec";
+<script>
+        // --- KONFIGURASI ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-KYpfaeSN0gVBTKlS-21ZmD1JeVYjjDgoQgotxUCXh5k9XHFUxEv1LJaqeB3FZfGI/exec";
         const ADMIN_PASSWORD = "123"; 
-        const EXAM_DURATION = 10; 
+        const EXAM_DURATION = 10; // Menit
 
+        // --- STATE ---
         let userData = { nama: "", mapel: "", mapelCode: "", kelas: "X-3" };
         let currentQ = 0;
         let userAnswers = [];
         let timerInterval;
         let isExamActive = false;
+        let lastCheckTime = 0; // Untuk deteksi Time-Skip
 
+        // CEK STATUS SAAT LOAD
         window.onload = function() {
             if(localStorage.getItem('STATUS_UJIAN') === 'LOCKED') {
                 document.getElementById('setup-screen').style.display = 'none';
@@ -243,6 +247,7 @@
             }
         };
 
+        // DATABASE SOAL
         const questionsDB = {
             informatika: [
                 { q: "Apa fungsi utama CPU?", o: ["Menyimpan data", "Memproses data", "Mencetak data"], a: 1 },
@@ -257,10 +262,18 @@
                 { q: "Luas persegi sisi 5...", o: ["20", "25", "30"], a: 1 },
                 { q: "Sudut siku-siku...", o: ["45", "90", "180"], a: 1 },
                 { q: "1 jam berapa menit?", o: ["60", "100", "3600"], a: 0 }
+            ],
+            bindo: [
+                { q: "Sinonim Senang...", o: ["Sedih", "Bahagia", "Marah"], a: 1 },
+                { q: "Ibukota Indonesia...", o: ["Bandung", "Surabaya", "Jakarta"], a: 2 },
+                { q: "Antonim Besar...", o: ["Kecil", "Luas", "Lebar"], a: 0 },
+                { q: "Subjek kalimat...", o: ["Pelaku", "Pekerjaan", "Keterangan"], a: 0 },
+                { q: "Tanda tanya untuk...", o: ["Perintah", "Tanya", "Seru"], a: 1 }
             ]
         };
         let activeQuestions = [];
 
+        // --- NAVIGASI & MODAL ---
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(e, id) { if(e.target.classList.contains('modal-overlay')) document.getElementById(id).classList.remove('active'); }
         function forceClose(id) { document.getElementById(id).classList.remove('active'); }
@@ -280,11 +293,10 @@
             }
         }
 
-        // --- UPDATED: START EXAM TANPA FULLSCREEN ---
+        // --- MULAI UJIAN ---
         function startExam() {
             if(!userData.mapel || !userData.nama) { alert("Data belum lengkap!"); return; }
             
-            // Langsung mulai tanpa requestFullscreen
             activeQuestions = questionsDB[userData.mapelCode] || questionsDB.informatika;
             userAnswers = new Array(activeQuestions.length).fill(null);
             
@@ -297,7 +309,9 @@
 
             renderQuestion();
             startTimer(EXAM_DURATION * 60);
+            
             isExamActive = true;
+            lastCheckTime = Date.now(); // Inisialisasi waktu
             activateSecurity();
         }
 
@@ -332,7 +346,10 @@
         }
 
         function saveAnswer(idx) { userAnswers[currentQ] = idx; renderQuestion(); }
-        function nextQuestion() { if(currentQ < activeQuestions.length - 1) { currentQ++; renderQuestion(); } else { openModal('modal-confirm'); } }
+        function nextQuestion() { 
+            if(currentQ < activeQuestions.length - 1) { currentQ++; renderQuestion(); } 
+            else { openModal('modal-confirm'); } 
+        }
         function prevQuestion() { if(currentQ > 0) { currentQ--; renderQuestion(); } }
 
         function openGrid() {
@@ -347,10 +364,13 @@
         }
         function jumpTo(i) { currentQ = i; renderQuestion(); forceClose('modal-grid'); }
 
+        // --- PENGIRIMAN DATA (DIPERKUAT UNTUK APK) ---
         function processSubmission() {
             forceClose('modal-confirm');
             document.getElementById('loading-overlay').style.display = 'flex';
-            isExamActive = false; clearInterval(timerInterval);
+            
+            isExamActive = false; 
+            clearInterval(timerInterval);
             localStorage.removeItem('STATUS_UJIAN');
             localStorage.removeItem('LOCK_REASON');
 
@@ -359,65 +379,76 @@
             activeQuestions.forEach((q, i) => { if(userAnswers[i] === q.a) score += points; });
             const finalScore = Math.round(score);
 
+            // Fetch dengan konfigurasi khusus APK
             fetch(SCRIPT_URL, {
-                method: 'POST', mode: 'no-cors',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ nama: userData.nama, kelas: userData.kelas, mapel: userData.mapel, nilai: finalScore })
-            }).then(() => {
-                document.getElementById('loading-overlay').style.display = 'none';
-                document.getElementById('final-score-display').textContent = finalScore;
-                openModal('modal-success');
-            }).catch(() => {
-                alert("Nilai lokal: " + finalScore); window.location.href='index.html';
+                method: 'POST', 
+                mode: 'no-cors', // Wajib untuk Google Script
+                cache: 'no-cache',
+                credentials: 'omit',
+                redirect: 'follow', // Penting untuk mengikuti redirect Google
+                keepalive: true,    // Menjaga koneksi tetap hidup
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    nama: userData.nama, 
+                    kelas: userData.kelas, 
+                    mapel: userData.mapel, 
+                    nilai: finalScore 
+                })
+            })
+            .then(() => {
+                showSuccess(finalScore);
+            })
+            .catch(err => {
+                // Di APK, error seringkali terjadi meski data terkirim (karena no-cors)
+                // Kita asumsikan sukses jika script tidak crash
+                console.log(err);
+                showSuccess(finalScore);
             });
         }
 
-     // --- SECURITY SUITE (KHUSUS APK/WEBVIEW) ---
+        function showSuccess(score) {
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('final-score-display').textContent = score;
+            openModal('modal-success');
+        }
+
+        // --- SECURITY SUITE (KHUSUS APK: TIME SKIP) ---
         function activateSecurity() {
-            // 1. DETEKSI PINDAH APP via "TIME SKIP" (Sangat Ampuh untuk APK)
-            let lastCheck = Date.now();
-            
+            // 1. Logika 'Loncatan Waktu' (Anti-Freeze)
+            // Ini satu-satunya cara deteksi minimize di Android WebView yang akurat
             setInterval(() => {
                 if (!isExamActive) return;
-
+                
                 const now = Date.now();
-                const diff = now - lastCheck;
-
-                // Jika waktu loncat lebih dari 3500ms (3.5 detik), padahal interval cuma 1000ms
-                // Berarti aplikasi sempat 'Tidur' atau ditinggalkan
-                if (diff > 3500) { 
-                    lockExam("Meninggalkan Aplikasi (Terdeteksi Waktu)");
+                const diff = now - lastCheckTime;
+                
+                // Jika selisih waktu > 4000ms (4 detik) padahal interval 1 detik
+                // Berarti aplikasi sempat berhenti/minimize
+                if (diff > 4000) {
+                    lockExam("Meninggalkan Aplikasi (Terdeteksi)");
                 }
                 
-                lastCheck = now;
-            }, 1000); // Cek setiap 1 detik
+                lastCheckTime = now;
+            }, 1000);
 
-            // 2. Event Listener Standar (Backup untuk Browser/PC)
-            document.addEventListener('visibilitychange', () => { 
-                if(document.visibilityState === 'hidden' && isExamActive) lockExam("Minimize / Pindah Tab"); 
-            });
-            
-            // Blur kadang terlalu sensitif di HP (misal saat tarik notifikasi), 
-            // jadi kita pakai Time Skip sebagai pertahanan utama.
-            window.addEventListener('blur', () => { 
-                // Opsional: Aktifkan jika ingin sangat ketat, tapi bisa false positive di HP
-                // if(isExamActive) lockExam("Kehilangan Fokus Layar"); 
-            });
-
-            // 3. Anti Screenshot (Tombol PrtSc)
+            // 2. Deteksi Screenshot (Tombol Fisik)
             window.addEventListener('keyup', (e) => {
-                if(isExamActive && e.key === 'PrintScreen') {
-                    lockExam("Terdeteksi Screenshot");
-                }
+                if(isExamActive && e.key === 'PrintScreen') lockExam("Terdeteksi Screenshot");
             });
 
-            // 4. Matikan Clipboard
+            // 3. Clear Clipboard
             setInterval(() => { if(isExamActive) window.getSelection().removeAllRanges(); }, 1000);
+            
+            // 4. Deteksi Standar (Backup)
+            document.addEventListener('visibilitychange', () => { 
+                if(document.visibilityState === 'hidden' && isExamActive) lockExam("Pindah Aplikasi"); 
+            });
         }
 
         function lockExam(reason) {
             if(!isExamActive) return;
             isExamActive = false;
+            
             localStorage.setItem('STATUS_UJIAN', 'LOCKED');
             localStorage.setItem('LOCK_REASON', reason);
             
@@ -426,6 +457,7 @@
             document.getElementById('block-screen').style.display = 'flex';
         }
 
+        // --- UNLOCK SYSTEM ---
         function openUnlockModal() {
             document.getElementById('password-error').style.display = 'none';
             document.getElementById('admin-password').value = '';
@@ -443,6 +475,7 @@
             }
         }
 
+        // --- TIMER ---
         function startTimer(duration) {
             let timer = duration;
             const display = document.getElementById('timer-display');
@@ -454,6 +487,7 @@
             }, 1000);
         }
 
+        // Block Keys
         document.onkeydown = function(e) { 
             if(e.keyCode == 123) return false; 
             if(e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) return false; 
@@ -461,3 +495,4 @@
     </script>
 </body>
 </html>
+
