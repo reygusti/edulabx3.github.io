@@ -35,7 +35,27 @@
     </div>
 
     <script>
-        // --- CONFIG FIREBASE ANDA (SUDAH SAYA MASUKKAN) ---
+        // --- FUNGSI FULLSCREEN ---
+        function masukFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => console.log(err));
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
+
+        function keluarFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+
+        // --- CONFIG FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyBNy2zpRlfuHxklRG1WQmG0jqx-i6Vfm-E",
             authDomain: "edulab-6.firebaseapp.com",
@@ -58,6 +78,10 @@
             const btn = document.getElementById('btn-login');
             const err = document.getElementById('error-msg');
 
+            // 1. COBA MASUK FULLSCREEN SEGERA SAAT TOMBOL DIKLIK
+            // (Browser memerlukan interaksi pengguna untuk mengizinkan fullscreen)
+            masukFullscreen();
+
             btn.innerText = "Memproses...";
             btn.disabled = true;
             err.style.display = 'none';
@@ -65,10 +89,13 @@
             auth.signInWithEmailAndPassword(email, pass)
                 .then((userCredential) => {
                     // BERHASIL -> PINDAH KE DASHBOARD
+                    // Note: Perpindahan halaman ini mungkin akan mereset fullscreen tergantung browser
                     window.location.href = "index.html"; 
                 })
                 .catch((error) => {
-                    // GAGAL
+                    // GAGAL -> KELUAR FULLSCREEN & TAMPILKAN ERROR
+                    keluarFullscreen();
+
                     console.error(error);
                     btn.innerText = "MASUK APLIKASI";
                     btn.disabled = false;
