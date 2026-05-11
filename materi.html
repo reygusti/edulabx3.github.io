@@ -9,6 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MathJax for rendering beautiful Math Formulas -->
+    <script>
+      MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 
     <style>
         :root {
@@ -120,7 +128,7 @@
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
         }
 
-        /* List Items & Accordion */
+        /* List Items */
         .list-container { padding: 0 1.5rem 1rem; display: flex; flex-direction: column; gap: 1rem; }
         .list-item {
             background: var(--surface); padding: 1.2rem; border-radius: var(--radius-md);
@@ -128,7 +136,8 @@
             border: 1px solid rgba(0,0,0,0.02); cursor: pointer; transition: 0.2s; 
             color: inherit;
         }
-        .item-main { display: flex; align-items: flex-start; gap: 15px; width: 100%; }
+        .list-item:active { transform: scale(0.98); }
+        .item-main { display: flex; align-items: center; gap: 15px; width: 100%; }
         
         .list-icon { 
             width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
@@ -144,42 +153,21 @@
         .badge-mipa { background: #eef2ff; color: #4f46e5; }
         .badge-ips { background: #fffbeb; color: #d97706; }
 
-        .chevron { transition: transform 0.3s; color: var(--text-light); display: flex; align-items: center; height: 100%; }
-        .list-item.active .chevron { transform: rotate(180deg); color: var(--primary); }
-
         /* TAMPILAN MATERI (ISI BACAAN) */
-        .materi-detail { 
-            display: none; width: 100%; padding-top: 15px; margin-top: 15px; 
-            border-top: 1px dashed #e2e8f0; animation: fadeIn 0.3s;
-        }
-        .list-item.active .materi-detail { display: block; }
-        
         .materi-teks {
-            background: #f8fafc; padding: 15px; border-radius: 12px;
-            font-size: 0.85rem; line-height: 1.6; color: #334155;
-            border: 1px solid #e2e8f0;
+            font-size: 0.9rem; line-height: 1.7; color: #334155;
         }
         .materi-teks h5 { 
-            color: var(--primary); font-size: 1.05rem; margin-bottom: 10px; 
-            border-bottom: 2px solid var(--accent-soft); padding-bottom: 5px; 
+            color: var(--primary); font-size: 1.2rem; margin-bottom: 15px; 
+            border-bottom: 2px solid var(--accent-soft); padding-bottom: 8px; 
         }
-        .materi-teks h6 { font-size: 0.9rem; color: var(--text-main); margin-top: 15px; margin-bottom: 5px; font-weight: 700; }
-        .materi-teks p { margin-bottom: 8px; text-align: justify; }
-        .materi-teks ul, .materi-teks ol { padding-left: 20px; margin-bottom: 8px; }
-        .materi-teks li { margin-bottom: 6px; }
-        
-        .btn-baca-penuh {
-            display: block; text-align: center; width: 100%; padding: 12px;
-            background: var(--primary); color: white; border: none; border-radius: 8px;
-            margin-top: 15px; font-weight: 700; font-size: 0.85rem; cursor: pointer;
-            transition: 0.2s; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
-        }
-        .btn-baca-penuh:active { transform: scale(0.98); }
+        .materi-teks h6 { font-size: 1rem; color: var(--text-main); margin-top: 20px; margin-bottom: 8px; font-weight: 700; }
+        .materi-teks p { margin-bottom: 12px; text-align: justify; }
+        .materi-teks ul, .materi-teks ol { padding-left: 20px; margin-bottom: 12px; }
+        .materi-teks li { margin-bottom: 8px; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Math formula specific styling override */
+        .MathJax { font-size: 1.1em !important; }
     </style>
 </head>
 <body>
@@ -217,7 +205,7 @@
             <div class="list-container">
                 
                 <!-- MATERI PAI -->
-                <div class="list-item" onclick="toggleMateri(this)">
+                <div class="list-item" onclick="openDetail('Pend. Agama Islam', this)">
                     <div class="item-main">
                         <div class="list-icon c-emerald"><i class="fa-solid fa-book-quran"></i></div>
                         <div class="list-content">
@@ -227,9 +215,10 @@
                             </div>
                             <p>Larangan Zina, Asmaul Husna, Syaja'ah</p>
                         </div>
-                        <div class="chevron"><i class="fa-solid fa-chevron-down"></i></div>
+                        <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                     </div>
-                    <div class="materi-detail">
+                    <!-- Data Materi (Disembunyikan) -->
+                    <div class="materi-content-data" style="display: none;">
                         <div class="materi-teks">
                             <h5>Bab 1: Menjaga Martabat Manusia</h5>
                             <h6>A. Larangan Pergaulan Bebas dan Zina</h6>
@@ -240,15 +229,12 @@
                                 <li><strong>Ghairu Muhsan:</strong> Pezina yang belum pernah menikah. Hukumannya didera (dicambuk) 100 kali.</li>
                             </ul>
                             <p>Pergaulan bebas adalah pintu masuk menuju perzinaan. Oleh karena itu, Islam mewajibkan umatnya untuk menundukkan pandangan (Ghadul Basar) dan menutup aurat.</p>
-                            
-                            <!-- Tombol Layar Penuh -->
-                            <button class="btn-baca-penuh" onclick="openDetail(event, 'Pend. Agama Islam')">Buka Mode Layar Penuh</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- MATERI BAHASA INDONESIA -->
-                <div class="list-item" onclick="toggleMateri(this)">
+                <div class="list-item" onclick="openDetail('Bahasa Indonesia', this)">
                     <div class="item-main">
                         <div class="list-icon c-rose"><i class="fa-solid fa-book-open"></i></div>
                         <div class="list-content">
@@ -258,9 +244,10 @@
                             </div>
                             <p>Teks LHO, Eksposisi, Anekdot</p>
                         </div>
-                        <div class="chevron"><i class="fa-solid fa-chevron-down"></i></div>
+                        <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                     </div>
-                    <div class="materi-detail">
+                    <!-- Data Materi (Disembunyikan) -->
+                    <div class="materi-content-data" style="display: none;">
                         <div class="materi-teks">
                             <h5>Bab 1: Teks Laporan Hasil Observasi</h5>
                             <p>Teks Laporan Hasil Observasi (LHO) adalah teks yang berisi penjabaran umum atau melaporkan sesuatu berupa hasil dari pengamatan (observasi).</p>
@@ -272,15 +259,12 @@
                             </ol>
                             <h6>Kaidah Kebahasaan:</h6>
                             <p>Menggunakan kata benda (nomina), frasa verbal, kalimat definisi (adalah, merupakan), serta kata penghubung (konjungsi) yang menyatakan tambahan atau perbedaan.</p>
-                            
-                            <!-- Tombol Layar Penuh -->
-                            <button class="btn-baca-penuh" onclick="openDetail(event, 'Bahasa Indonesia')">Buka Mode Layar Penuh</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- MATERI MATEMATIKA -->
-                <div class="list-item" onclick="toggleMateri(this)">
+                <div class="list-item" onclick="openDetail('Matematika Wajib', this)">
                     <div class="item-main">
                         <div class="list-icon c-indigo"><i class="fa-solid fa-square-root-variable"></i></div>
                         <div class="list-content">
@@ -290,33 +274,41 @@
                             </div>
                             <p>Persamaan & Pertidaksamaan Nilai Mutlak</p>
                         </div>
-                        <div class="chevron"><i class="fa-solid fa-chevron-down"></i></div>
+                        <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                     </div>
-                    <div class="materi-detail">
+                    <!-- Data Materi (Disembunyikan) -->
+                    <div class="materi-content-data" style="display: none;">
                         <div class="materi-teks">
                             <h5>Bab 1: Nilai Mutlak</h5>
                             <h6>A. Konsep Nilai Mutlak</h6>
                             <p>Secara geometris, nilai mutlak dari suatu bilangan $x$, ditulis $|x|$, adalah jarak bilangan tersebut dari titik nol (0) pada garis bilangan riil. Karena menyatakan jarak, nilai mutlak tidak pernah bernilai negatif.</p>
-                            <p><strong>Definisi:</strong><br>
-                            $|x| = x$ , jika $x \ge 0$<br>
-                            $|x| = -x$ , jika $x < 0$</p>
+                            <p><strong>Definisi:</strong></p>
+                            <p>
+                                $|x| = \begin{cases} 
+                                x, & \text{jika } x \ge 0 \\ 
+                                -x, & \text{jika } x < 0 
+                                \end{cases}$
+                            </p>
                             <h6>B. Persamaan Nilai Mutlak</h6>
-                            <p>Untuk menyelesaikan $|f(x)| = c$, dengan syarat $c \ge 0$, kita membaginya menjadi dua kasus penyelesaian:<br>
-                            1) $f(x) = c$<br>
-                            2) $f(x) = -c$</p>
-                            <p><em>Contoh:</em> Selesaikan $|x - 3| = 5$.<br>
-                            Maka: $x - 3 = 5 \rightarrow x = 8$<br>
-                            Atau: $x - 3 = -5 \rightarrow x = -2$<br>
-                            HP = {-2, 8}.</p>
-                            
-                            <!-- Tombol Layar Penuh -->
-                            <button class="btn-baca-penuh" onclick="openDetail(event, 'Matematika Wajib')">Buka Mode Layar Penuh</button>
+                            <p>Untuk menyelesaikan persamaan berbentuk $|f(x)| = c$, dengan syarat $c \ge 0$, kita membaginya menjadi dua kasus penyelesaian:</p>
+                            <ol>
+                                <li>$f(x) = c$</li>
+                                <li>$f(x) = -c$</li>
+                            </ol>
+                            <p><strong>Contoh Soal:</strong><br>
+                            Selesaikan persamaan $|x - 3| = 5$.</p>
+                            <p><strong>Penyelesaian:</strong><br>
+                            Berdasarkan definisi, terdapat dua kemungkinan:<br>
+                            $x - 3 = 5 \implies x = 8$<br>
+                            atau<br>
+                            $x - 3 = -5 \implies x = -2$</p>
+                            <p>Jadi, Himpunan Penyelesaiannya (HP) = $\{-2, 8\}$.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- MATERI FISIKA -->
-                <div class="list-item" onclick="toggleMateri(this)">
+                <div class="list-item" onclick="openDetail('Fisika', this)">
                     <div class="item-main">
                         <div class="list-icon c-amber"><i class="fa-solid fa-atom"></i></div>
                         <div class="list-content">
@@ -326,33 +318,35 @@
                             </div>
                             <p>Besaran, Satuan, dan Pengukuran</p>
                         </div>
-                        <div class="chevron"><i class="fa-solid fa-chevron-down"></i></div>
+                        <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                     </div>
-                    <div class="materi-detail">
+                    <!-- Data Materi (Disembunyikan) -->
+                    <div class="materi-content-data" style="display: none;">
                         <div class="materi-teks">
                             <h5>Bab 1: Besaran dan Satuan</h5>
                             <h6>A. Besaran Pokok</h6>
                             <p>Besaran yang satuannya telah ditetapkan terlebih dahulu dan tidak diturunkan dari besaran lain. Ada 7 besaran pokok dalam SI (Sistem Internasional):</p>
                             <ul>
-                                <li><strong>Panjang:</strong> meter (m) - [L]</li>
-                                <li><strong>Massa:</strong> kilogram (kg) - [M]</li>
-                                <li><strong>Waktu:</strong> sekon (s) - [T]</li>
-                                <li><strong>Kuat Arus:</strong> Ampere (A) - [I]</li>
-                                <li><strong>Suhu:</strong> Kelvin (K) - [θ]</li>
-                                <li><strong>Intensitas Cahaya:</strong> Candela (cd) - [J]</li>
-                                <li><strong>Jumlah Zat:</strong> mol (mol) - [N]</li>
+                                <li><strong>Panjang:</strong> meter (m) - Dimensi $[L]$</li>
+                                <li><strong>Massa:</strong> kilogram (kg) - Dimensi $[M]$</li>
+                                <li><strong>Waktu:</strong> sekon (s) - Dimensi $[T]$</li>
+                                <li><strong>Kuat Arus:</strong> Ampere (A) - Dimensi $[I]$</li>
+                                <li><strong>Suhu:</strong> Kelvin (K) - Dimensi $[\theta]$</li>
+                                <li><strong>Intensitas Cahaya:</strong> Candela (cd) - Dimensi $[J]$</li>
+                                <li><strong>Jumlah Zat:</strong> mol (mol) - Dimensi $[N]$</li>
                             </ul>
                             <h6>B. Angka Penting</h6>
                             <p>Angka penting adalah semua angka yang diperoleh dari hasil pengukuran. Aturan dasar: Semua angka bukan nol adalah angka penting. Angka nol di antara angka bukan nol adalah angka penting.</p>
-                            
-                            <!-- Tombol Layar Penuh -->
-                            <button class="btn-baca-penuh" onclick="openDetail(event, 'Fisika')">Buka Mode Layar Penuh</button>
+                            <h6>C. Rumus Jarak pada GLB</h6>
+                            <p>Pada Gerak Lurus Beraturan (GLB), rumus jarak dirumuskan dengan:<br>
+                            $s = v \times t$<br>
+                            di mana $s$ adalah jarak, $v$ adalah kecepatan, dan $t$ adalah waktu.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- MATERI BIOLOGI -->
-                <div class="list-item" onclick="toggleMateri(this)">
+                <div class="list-item" onclick="openDetail('Biologi', this)">
                     <div class="item-main">
                         <div class="list-icon c-emerald"><i class="fa-solid fa-leaf"></i></div>
                         <div class="list-content">
@@ -362,9 +356,10 @@
                             </div>
                             <p>Keanekaragaman Hayati dan Klasifikasi</p>
                         </div>
-                        <div class="chevron"><i class="fa-solid fa-chevron-down"></i></div>
+                        <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                     </div>
-                    <div class="materi-detail">
+                    <!-- Data Materi (Disembunyikan) -->
+                    <div class="materi-content-data" style="display: none;">
                         <div class="materi-teks">
                             <h5>Bab 1: Keanekaragaman Hayati</h5>
                             <h6>A. Tingkat Keanekaragaman</h6>
@@ -375,15 +370,12 @@
                             </ul>
                             <h6>B. Flora & Fauna Indonesia</h6>
                             <p>Indonesia dibagi oleh <em>Garis Wallace</em> dan <em>Garis Weber</em> menjadi 3 zona: Asiatis (Barat), Peralihan (Tengah), dan Australis (Timur).</p>
-                            
-                            <!-- Tombol Layar Penuh -->
-                            <button class="btn-baca-penuh" onclick="openDetail(event, 'Biologi')">Buka Mode Layar Penuh</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- MATERI EKONOMI -->
-                <div class="list-item" onclick="toggleMateri(this)">
+                <div class="list-item" onclick="openDetail('Ekonomi', this)">
                     <div class="item-main">
                         <div class="list-icon c-indigo" style="background: #e0e7ff; color: #4338ca;"><i class="fa-solid fa-chart-line"></i></div>
                         <div class="list-content">
@@ -393,9 +385,10 @@
                             </div>
                             <p>Konsep Dasar Ilmu Ekonomi</p>
                         </div>
-                        <div class="chevron"><i class="fa-solid fa-chevron-down"></i></div>
+                        <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 0.9rem;"></i>
                     </div>
-                    <div class="materi-detail">
+                    <!-- Data Materi (Disembunyikan) -->
+                    <div class="materi-content-data" style="display: none;">
                         <div class="materi-teks">
                             <h5>Bab 1: Ilmu Ekonomi</h5>
                             <h6>A. Masalah Ekonomi: Kelangkaan (Scarcity)</h6>
@@ -404,9 +397,6 @@
                             <p>Biaya peluang adalah nilai dari alternatif terbaik yang dikorbankan ketika seseorang membuat suatu pilihan. Berbeda dengan biaya sehari-hari yang menghitung nilai uang secara absolut.</p>
                             <h6>C. Skala Prioritas</h6>
                             <p>Cara mengatasi kelangkaan adalah dengan menyusun daftar kebutuhan berdasarkan tingkat kepentingannya, dari yang paling mendesak hingga yang bisa ditunda (kebutuhan vs keinginan).</p>
-                            
-                            <!-- Tombol Layar Penuh -->
-                            <button class="btn-baca-penuh" onclick="openDetail(event, 'Ekonomi')">Buka Mode Layar Penuh</button>
                         </div>
                     </div>
                 </div>
@@ -420,18 +410,16 @@
         <!-- ========================================== -->
         <div id="view-detail" class="view">
             <!-- Header Mode Baca -->
-            <div class="top-bar" style="background: var(--primary); color: white; border-bottom: none;">
+            <div class="top-bar" style="background: var(--surface); border-bottom: 1px solid #f1f5f9; position: sticky; top: 0; z-index: 100;">
                 <!-- Tombol kembali ke View List -->
-                <div class="back-btn" onclick="closeDetail()" style="background: rgba(255,255,255,0.2); color: white; border: none;"><i class="fa-solid fa-arrow-left"></i></div>
-                <h2 id="detail-title" style="font-size: 1.1rem; font-weight: 800; text-align: center; width: 100%; margin-right: 40px;">Judul Pelajaran</h2>
+                <div class="back-btn" onclick="closeDetail()" style="box-shadow: none; border-color: #e2e8f0;"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2 id="detail-title" style="font-size: 1.15rem; font-weight: 800; text-align: center; width: 100%; margin-right: 40px; color: var(--text-main);">Judul Pelajaran</h2>
             </div>
             
             <!-- Tempat Materi Ditampilkan -->
             <div style="padding: 1.5rem; background: white; min-height: 100vh;">
-                <!-- Menggunakan style materi-teks tapi tanpa border/background -->
-                <div id="detail-content" class="materi-teks" style="background: transparent; border: none; padding: 0;">
-                    <!-- Konten akan dimuat otomatis via Javascript dari kartu yang dipilih -->
-                </div>
+                <!-- Konten akan dimuat otomatis via Javascript dari kartu yang dipilih -->
+                <div id="detail-content"></div>
             </div>
         </div>
 
@@ -439,46 +427,23 @@
 
     <!-- Script Interaktif -->
     <script>
-        // FUNGSI 1: MEMBUKA AKORDEON (PREVIEW)
-        function toggleMateri(element) {
-            const isActive = element.classList.contains('active');
+        // MEMBUKA HALAMAN LAYAR PENUH (SPA)
+        function openDetail(judulPelajaran, element) {
             
-            // Tutup semua dropdown terlebih dahulu
-            document.querySelectorAll('.list-item').forEach(item => {
-                item.classList.remove('active');
-            });
-
-            // Jika yang diklik belum terbuka, maka buka (expand)
-            if (!isActive) {
-                element.classList.add('active');
-                
-                // Scroll agar materi terlihat dengan jelas di layar
-                setTimeout(() => {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 200);
-            }
-        }
-
-        // FUNGSI 2: MEMBUKA HALAMAN LAYAR PENUH (SPA) Tanpa berpindah file HTML
-        function openDetail(event, judulPelajaran) {
-            // Mencegah klik menyebar ke fungsi toggleMateri
-            event.stopPropagation();
+            // Mengambil elemen "materi-content-data" dari kartu yang diklik
+            const contentHtml = element.querySelector('.materi-content-data').innerHTML;
             
-            // Mengambil elemen "materi-teks" dari list yang diklik
-            const listItem = event.target.closest('.list-item');
-            const contentHtml = listItem.querySelector('.materi-teks').innerHTML;
-            
-            // Menyalin konten html
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = contentHtml;
-            
-            // Hapus tombol "Buka Mode Layar Penuh" di versi layar penuh
-            const btn = tempDiv.querySelector('.btn-baca-penuh');
-            if(btn) btn.remove();
-
             // Pasang teks dan judul ke Halaman Layar Penuh (View Detail)
             document.getElementById('detail-title').innerText = judulPelajaran;
-            document.getElementById('detail-content').innerHTML = tempDiv.innerHTML;
+            const detailContainer = document.getElementById('detail-content');
+            detailContainer.innerHTML = contentHtml;
+
+            // Trigger MathJax untuk memproses rumus matematika (jika ada)
+            if (window.MathJax) {
+                MathJax.typesetPromise([detailContainer]).catch(function (err) {
+                    console.warn('MathJax error: ', err.message);
+                });
+            }
 
             // Sembunyikan daftar, tampilkan layar penuh
             document.getElementById('view-list').classList.remove('active');
@@ -491,7 +456,7 @@
             history.pushState({ view: 'detail' }, '', '#baca-materi');
         }
 
-        // FUNGSI 3: MENUTUP HALAMAN LAYAR PENUH
+        // MENUTUP HALAMAN LAYAR PENUH
         function closeDetail() {
             document.getElementById('view-detail').classList.remove('active');
             document.getElementById('view-list').classList.add('active');
@@ -500,7 +465,7 @@
             document.querySelector('.app-container').scrollTo({ top: 0, behavior: 'auto' });
         }
 
-        // FUNGSI 4: MENCEGAH KELUAR APLIKASI KETIKA MENEKAN TOMBOL BACK DI HP
+        // MENCEGAH KELUAR APLIKASI KETIKA MENEKAN TOMBOL BACK DI HP
         window.addEventListener('popstate', function(event) {
             // Jika sedang berada di mode layar penuh (view-detail aktif), tutup halamannya
             const viewDetail = document.getElementById('view-detail');
