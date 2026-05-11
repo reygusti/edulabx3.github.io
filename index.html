@@ -70,7 +70,6 @@
             display: block; 
             opacity: 1; transform: translateY(0);
         }
-        .sub-page-pb { padding-bottom: 40px; } /* Less padding for pages without bottom nav */
 
         /* --- REUSABLE COMPONENTS --- */
         .top-bar {
@@ -81,18 +80,7 @@
             position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid rgba(0,0,0,0.02);
         }
-        .top-bar.sub-header {
-            justify-content: flex-start; gap: 15px;
-        }
         
-        .back-btn {
-            width: 40px; height: 40px; border-radius: var(--radius-sm);
-            background: var(--surface); display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.02); transition: 0.2s;
-        }
-        .back-btn:active { transform: scale(0.9); }
-
         .user-profile-sm { display: flex; align-items: center; gap: 12px; }
         .avatar-sm { 
             width: 45px; height: 45px; border-radius: var(--radius-md); 
@@ -105,7 +93,7 @@
             width: 45px; height: 45px; border-radius: var(--radius-md); 
             background: var(--surface); display: flex; align-items: center; justify-content: center; 
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.02); color: inherit; text-decoration: none;
         }
         .notif-dot { 
             position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; 
@@ -124,6 +112,7 @@
             scroll-snap-type: x mandatory; 
         }
         .promo-card { 
+            display: block; text-decoration: none;
             min-width: 280px; height: 160px; border-radius: var(--radius-lg); 
             position: relative; overflow: hidden; scroll-snap-align: start;
             box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.2);
@@ -142,38 +131,13 @@
             font-size: 0.65rem; color: white; margin-bottom: 8px; font-weight: 600;
         }
 
-        /* --- STATS GRID --- */
-        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0 1.5rem 1.5rem; }
-        .stat-card { 
-            background: var(--surface); padding: 1.2rem; border-radius: var(--radius-md); 
-            box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.02);
-            display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden;
-        }
-        .stat-card::before {
-            content: ''; position: absolute; right: -10px; top: -10px; 
-            width: 60px; height: 60px; border-radius: 50%;
-            background: var(--accent-soft); opacity: 0.5;
-        }
-        .stat-card i { font-size: 1.4rem; color: var(--primary); }
-        .stat-card p { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card h3 { font-size: 1.4rem; font-weight: 800; }
-
-        /* --- PROGRESS BAR --- */
-        .progress-box { 
-            margin: 0 1.5rem 1.5rem; background: var(--surface); padding: 1.2rem; 
-            border-radius: var(--radius-md); box-shadow: var(--card-shadow); 
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-        .bar-bg { width: 100%; height: 10px; background: #f1f5f9; border-radius: 10px; margin-top: 12px; overflow: hidden; }
-        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #8b5cf6); border-radius: 10px; width: 0%; transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1); }
-
         /* --- MODERN MENU --- */
         .main-menu { 
             background: var(--surface); margin: 0 1.5rem 1.5rem; padding: 1.5rem; 
             border-radius: var(--radius-lg); display: grid; grid-template-columns: repeat(4, 1fr); 
             gap: 1.5rem 0.5rem; box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.02);
         }
-        .menu-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; }
+        .menu-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; text-decoration: none; color: inherit; }
         .menu-btn:active { transform: scale(0.9); }
         .icon-circle { 
             width: 54px; height: 54px; border-radius: 18px; 
@@ -196,7 +160,7 @@
         .list-item {
             background: var(--surface); padding: 1.2rem; border-radius: var(--radius-md);
             box-shadow: var(--card-shadow); display: flex; align-items: center; gap: 15px;
-            border: 1px solid rgba(0,0,0,0.02); cursor: pointer; transition: 0.2s;
+            border: 1px solid rgba(0,0,0,0.02); cursor: pointer; transition: 0.2s; text-decoration: none; color: inherit;
         }
         .list-item:active { transform: scale(0.98); }
         .list-icon { 
@@ -215,11 +179,7 @@
             border-radius: 24px; display: flex; justify-content: space-around; align-items: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.5);
             z-index: 1000; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Initial state */
             transform: translateX(-50%) translateY(0);
-        }
-        .nav-bar.hidden {
-            transform: translateX(-50%) translateY(150%);
         }
         .nav-link { 
             color: var(--text-light); text-decoration: none; font-size: 1.3rem; 
@@ -273,25 +233,6 @@
         .sc-blue::before { background: var(--primary); }
         .sc-red::before { background: var(--danger); }
         .sc-green::before { background: var(--success); }
-
-        .chat-bubble { padding: 1rem; border-radius: 18px; max-width: 80%; margin-bottom: 1rem; font-size: 0.9rem; line-height: 1.5; }
-        .chat-left { background: white; border-bottom-left-radius: 4px; box-shadow: var(--card-shadow); align-self: flex-start; }
-        .chat-right { background: var(--primary); color: white; border-bottom-right-radius: 4px; box-shadow: 0 5px 15px rgba(79,70,229,0.2); align-self: flex-end; margin-left: auto; }
-
-        .book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0 1.5rem 1rem; }
-        .book-card { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--card-shadow); }
-        .book-img { width: 100%; height: 180px; background: #e2e8f0; object-fit: cover; }
-        .book-info { padding: 1rem; }
-
-        .wallet-card { 
-            background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: var(--radius-lg); 
-            padding: 1.5rem; color: white; margin: 0 1.5rem 1.5rem; box-shadow: 0 15px 30px -10px rgba(0,0,0,0.3);
-            position: relative; overflow: hidden;
-        }
-        .wallet-card::after {
-            content: '\f155'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
-            position: absolute; right: -20px; bottom: -30px; font-size: 8rem; opacity: 0.05;
-        }
     </style>
 </head>
 <body>
@@ -310,65 +251,52 @@
                         <h2 style="font-size: 1.1rem; font-weight: 800;">Vale Gusti</h2>
                     </div>
                 </div>
-                <div class="notification-btn" onclick="goToPage('page-notif', true)">
+                <!-- Mengarah ke halaman Notifikasi sesungguhnya -->
+                <a href="/notif" class="notification-btn">
                     <i class="fa-regular fa-bell"></i>
                     <div class="notif-dot"></div>
-                </div>
+                </a>
             </div>
 
             <div class="section-header">
                 <h3>Info Terkini</h3>
-                <a href="#" class="see-all" onclick="goToPage('page-notif', true)">Lihat Semua</a>
+                <a href="/informasi" class="see-all">Lihat Semua</a>
             </div>
             
             <div class="promo-slider">
-                <div class="promo-card" onclick="openDetail('Persiapan Libur Idul Fitri 1447H', 'Berkenaan dengan libur nasional, kegiatan KBM ditiadakan mulai tanggal 10 April hingga 20 April 2026. Selamat berlibur!', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600')">
+                <!-- Promo Card menggunakan tag <a> agar bisa diklik menuju URL sesungguhnya -->
+                <a href="/informasi/libur-idul-fitri" class="promo-card">
                     <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600" alt="Libur">
                     <div class="promo-overlay">
                         <span class="promo-tag">Akademik</span>
                         <h4 style="color: white; font-size: 1rem; line-height: 1.3;">Persiapan Libur Idul Fitri 1447H</h4>
                     </div>
-                </div>
-                <div class="promo-card" onclick="openDetail('Eskul Futsal Raih Medali Emas', 'Tim Futsal MAN 6 berhasil menjuarai turnamen tingkat provinsi dan membawa pulang piala bergilir.', 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600')">
+                </a>
+                <a href="/informasi/prestasi-futsal" class="promo-card">
                     <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600" alt="Prestasi">
                     <div class="promo-overlay">
                         <span class="promo-tag" style="background: rgba(16, 185, 129, 0.4);">Prestasi</span>
                         <h4 style="color: white; font-size: 1rem; line-height: 1.3;">Eskul Futsal Raih Medali Emas</h4>
                     </div>
-                </div>
+                </a>
             </div>
 
-            <div class="stats-row">
-                <div class="stat-card">
-                    <i class="fa-solid fa-person-rays"></i>
-                    <p>Kehadiran</p>
-                    <h3>98.5%</h3>
-                </div>
-                <div class="stat-card">
-                    <i class="fa-solid fa-trophy" style="color: var(--warning);"></i>
-                    <p>Poin Siswa</p>
-                    <h3>1,240</h3>
-                </div>
-            </div>
-
-            <div class="progress-box">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <p style="font-size: 0.85rem; font-weight: 700;">Progress Belajar Smt 2</p>
-                    <span style="font-size: 0.85rem; color: var(--primary); font-weight: 800;">72%</span>
-                </div>
-                <div class="bar-bg"><div class="bar-fill" id="main-progress"></div></div>
-            </div>
-
+            <!-- SEMUA MENU INI ADALAH LINK MURNI (<a href="/...">) -->
             <div class="main-menu">
-                <div class="menu-btn" onclick="goToPage('page-materi', true)"><div class="icon-circle c-indigo"><i class="fa-solid fa-book-bookmark"></i></div><span>Materi</span></div>
-                <div class="menu-btn" onclick="goToPage('page-jadwal')"><div class="icon-circle c-rose"><i class="fa-solid fa-calendar-check"></i></div><span>Jadwal</span></div>
-                <div class="menu-btn" onclick="goToPage('page-ujian', true)"><div class="icon-circle c-amber"><i class="fa-solid fa-laptop-code"></i></div><span>Ujian</span></div>
-                <div class="menu-btn" onclick="goToPage('page-rapor', true)"><div class="icon-circle c-emerald"><i class="fa-solid fa-graduation-cap"></i></div><span>Rapor</span></div>
+                <a href="/materi" class="menu-btn"><div class="icon-circle c-indigo"><i class="fa-solid fa-book-bookmark"></i></div><span>Materi</span></a>
+                <a href="/jadwal" class="menu-btn"><div class="icon-circle c-rose"><i class="fa-solid fa-calendar-check"></i></div><span>Jadwal</span></a>
+                <a href="/ujian" class="menu-btn"><div class="icon-circle c-amber"><i class="fa-solid fa-laptop-code"></i></div><span>Ujian</span></a>
+                <a href="/rapor" class="menu-btn"><div class="icon-circle c-emerald"><i class="fa-solid fa-graduation-cap"></i></div><span>Rapor</span></a>
                 
-                <div class="menu-btn" onclick="goToPage('page-konsul', true)"><div class="icon-circle c-sky"><i class="fa-solid fa-comment-dots"></i></div><span>Konsul</span></div>
-                <div class="menu-btn" onclick="goToPage('page-elib', true)"><div class="icon-circle c-violet"><i class="fa-solid fa-swatchbook"></i></div><span>E-Lib</span></div>
-                <div class="menu-btn" onclick="goToPage('page-kantin', true)"><div class="icon-circle c-pink"><i class="fa-solid fa-wallet"></i></div><span>Kantin</span></div>
-                <div class="menu-btn" onclick="togglePopup('popup-more', true)"><div class="icon-circle" style="background: #f1f5f9; color: var(--text-muted);"><i class="fa-solid fa-grid-2-plus"></i></div><span>Lainnya</span></div>
+                <a href="/konsul" class="menu-btn"><div class="icon-circle c-sky"><i class="fa-solid fa-comment-dots"></i></div><span>Konsul</span></a>
+                <a href="/elib" class="menu-btn"><div class="icon-circle c-violet"><i class="fa-solid fa-swatchbook"></i></div><span>E-Lib</span></a>
+                <a href="/kantin" class="menu-btn"><div class="icon-circle c-pink"><i class="fa-solid fa-wallet"></i></div><span>Kantin</span></a>
+                
+                <!-- Tombol Lainnya menampilkan popup -->
+                <a href="#" class="menu-btn" onclick="togglePopup('popup-more', true); return false;">
+                    <div class="icon-circle" style="background: #f1f5f9; color: var(--text-muted);"><i class="fa-solid fa-grid-2-plus"></i></div>
+                    <span>Lainnya</span>
+                </a>
             </div>
         </div>
 
@@ -422,7 +350,7 @@
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
             </div>
             <div class="list-container">
-                <div class="list-item" onclick="goToPage('page-konsul', true)">
+                <a href="/pesan/wali-kelas" class="list-item">
                     <div class="avatar-sm" style="background: #10b981;">W</div>
                     <div class="list-content">
                         <div style="display: flex; justify-content: space-between;">
@@ -431,8 +359,8 @@
                         </div>
                         <p style="color: var(--text-main); font-weight: 600;">Jangan lupa kumpulkan tugas Fisika hari ini.</p>
                     </div>
-                </div>
-                <div class="list-item">
+                </a>
+                <a href="/pesan/guru-bk" class="list-item">
                     <div class="avatar-sm" style="background: #f59e0b;">BK</div>
                     <div class="list-content">
                         <div style="display: flex; justify-content: space-between;">
@@ -441,7 +369,7 @@
                         </div>
                         <p>Jadwal konseling karir universitas diundur besok.</p>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
 
@@ -466,255 +394,21 @@
             <div style="padding: 2rem 1.5rem;">
                 <h3 style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); margin-bottom: 1rem; margin-left: 5px;">Pengaturan Akun</h3>
                 <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.02);">
-                    <div class="list-item" style="box-shadow: none; border: none; border-bottom: 1px solid #f1f5f9; border-radius: 0;">
+                    <a href="/akun/edit" class="list-item" style="box-shadow: none; border: none; border-bottom: 1px solid #f1f5f9; border-radius: 0;">
                         <div class="list-icon c-indigo" style="width:40px; height:40px;"><i class="fa-solid fa-user-gear"></i></div>
                         <div class="list-content"><h4>Edit Profil</h4></div>
                         <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
-                    </div>
-                    <div class="list-item" style="box-shadow: none; border: none; border-bottom: 1px solid #f1f5f9; border-radius: 0;">
+                    </a>
+                    <a href="/akun/keamanan" class="list-item" style="box-shadow: none; border: none; border-bottom: 1px solid #f1f5f9; border-radius: 0;">
                         <div class="list-icon c-emerald" style="width:40px; height:40px;"><i class="fa-solid fa-shield-halved"></i></div>
                         <div class="list-content"><h4>Keamanan</h4></div>
                         <i class="fa-solid fa-chevron-right" style="color: #cbd5e1;"></i>
-                    </div>
-                    <div class="list-item" style="box-shadow: none; border: none; border-radius: 0;" onclick="location.reload()">
+                    </a>
+                    <a href="/logout" class="list-item" style="box-shadow: none; border: none; border-radius: 0;">
                         <div class="list-icon c-rose" style="width:40px; height:40px;"><i class="fa-solid fa-power-off"></i></div>
                         <div class="list-content"><h4 style="color: var(--danger);">Keluar Aplikasi</h4></div>
-                    </div>
+                    </a>
                 </div>
-            </div>
-        </div>
-
-        <!-- ============================================== -->
-        <!-- SUB-PAGES (No Bottom Nav)                      -->
-        <!-- ============================================== -->
-
-        <!-- MATERI PAGE -->
-        <div id="page-materi" class="page sub-page-pb">
-            <div class="top-bar sub-header">
-                <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></div>
-                <h2 style="font-size: 1.1rem; font-weight: 800;">Materi Pelajaran</h2>
-            </div>
-            <div class="list-container">
-                <div class="list-item">
-                    <div class="list-icon c-indigo"><i class="fa-solid fa-square-root-variable"></i></div>
-                    <div class="list-content">
-                        <h4>Matematika</h4>
-                        <div class="bar-bg" style="height: 6px; margin-top: 5px;"><div class="bar-fill" style="width: 80%;"></div></div>
-                        <p style="margin-top: 5px;">80% Selesai</p>
-                    </div>
-                </div>
-                <div class="list-item">
-                    <div class="list-icon c-emerald"><i class="fa-solid fa-leaf"></i></div>
-                    <div class="list-content">
-                        <h4>Biologi</h4>
-                        <div class="bar-bg" style="height: 6px; margin-top: 5px;"><div class="bar-fill" style="width: 45%; background: var(--success);"></div></div>
-                        <p style="margin-top: 5px;">45% Selesai</p>
-                    </div>
-                </div>
-                <div class="list-item">
-                    <div class="list-icon c-rose"><i class="fa-solid fa-globe"></i></div>
-                    <div class="list-content">
-                        <h4>Bahasa Inggris</h4>
-                        <div class="bar-bg" style="height: 6px; margin-top: 5px;"><div class="bar-fill" style="width: 100%; background: var(--danger);"></div></div>
-                        <p style="margin-top: 5px;">100% Selesai</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- UJIAN (CBT) PAGE -->
-        <div id="page-ujian" class="page sub-page-pb">
-            <div class="top-bar sub-header">
-                <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></div>
-                <h2 style="font-size: 1.1rem; font-weight: 800;">CBT Ujian</h2>
-            </div>
-            <div style="padding: 1rem 1.5rem;">
-                <div style="background: linear-gradient(135deg, var(--warning), #d97706); padding: 1.5rem; border-radius: var(--radius-md); color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.3);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="background: rgba(255,255,255,0.3); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;">SEDANG AKTIF</span>
-                        <i class="fa-solid fa-clock"></i>
-                    </div>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 5px;">Ujian Tengah Semester</h3>
-                    <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 15px;">Fisika - 90 Menit</p>
-                    <button style="width: 100%; padding: 0.8rem; border-radius: 12px; border: none; background: white; color: #d97706; font-weight: 800; cursor: pointer;">Mulai Kerjakan</button>
-                </div>
-                
-                <h3 style="font-size: 1rem; margin-bottom: 1rem;">Riwayat Ujian</h3>
-                <div class="list-item" style="margin-bottom: 10px;">
-                    <div class="list-content">
-                        <h4>Kuis Matematika Peminatan</h4>
-                        <p>10 Mar 2026</p>
-                    </div>
-                    <h3 style="color: var(--success);">92</h3>
-                </div>
-                <div class="list-item">
-                    <div class="list-content">
-                        <h4>Tryout UTBK</h4>
-                        <p>05 Mar 2026</p>
-                    </div>
-                    <h3 style="color: var(--primary);">85</h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- RAPOR PAGE -->
-        <div id="page-rapor" class="page sub-page-pb">
-            <div class="top-bar sub-header">
-                <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></div>
-                <h2 style="font-size: 1.1rem; font-weight: 800;">E-Rapor Siswa</h2>
-            </div>
-            <div style="padding: 1rem 1.5rem;">
-                <div style="text-align: center; padding: 2rem; background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--card-shadow); margin-bottom: 1.5rem;">
-                    <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">IPK Saat Ini</p>
-                    <h1 style="font-size: 3.5rem; color: var(--primary); font-weight: 800;">3.85</h1>
-                    <p style="color: var(--success); font-size: 0.9rem; font-weight: 600;"><i class="fa-solid fa-arrow-trend-up"></i> Naik 0.2 dari semester lalu</p>
-                </div>
-                <div class="list-item" style="margin-bottom: 10px;">
-                    <div class="list-icon" style="background: #f1f5f9;">S5</div>
-                    <div class="list-content"><h4>Semester 5</h4><p>Tahun Ajaran 2025/2026</p></div>
-                    <button style="padding: 8px 15px; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: 600;">Lihat</button>
-                </div>
-                <div class="list-item" style="margin-bottom: 10px;">
-                    <div class="list-icon" style="background: #f1f5f9;">S4</div>
-                    <div class="list-content"><h4>Semester 4</h4><p>Tahun Ajaran 2024/2025</p></div>
-                    <button style="padding: 8px 15px; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: 600;">Lihat</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- KONSUL PAGE -->
-        <div id="page-konsul" class="page sub-page-pb">
-            <div class="top-bar sub-header" style="box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div class="avatar-sm" style="width: 35px; height: 35px; border-radius: 10px; background: #10b981;">W</div>
-                    <div>
-                        <h2 style="font-size: 1rem; font-weight: 800;">Wali Kelas</h2>
-                        <p style="font-size: 0.7rem; color: var(--success);">Online</p>
-                    </div>
-                </div>
-            </div>
-            <div style="padding: 1.5rem; display: flex; flex-direction: column; min-height: 70vh;">
-                <div class="chat-bubble chat-left">Selamat pagi Vale, bagaimana persiapan ujiannya? Jangan lupa tugas fisika dikumpulkan hari ini ya.</div>
-                <div class="chat-bubble chat-right">Pagi pak, siap! Persiapan aman, tugas sedang saya kerjakan dan akan dikirim siang ini. Terima kasih pengingatnya pak.</div>
-                
-                <div style="margin-top: auto; display: flex; gap: 10px; background: white; padding: 10px; border-radius: 20px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05);">
-                    <input type="text" placeholder="Ketik pesan..." style="flex: 1; border: none; background: #f1f5f9; padding: 12px 15px; border-radius: 15px; outline: none;">
-                    <button style="width: 45px; border: none; background: var(--primary); color: white; border-radius: 15px; cursor: pointer;"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- E-LIB PAGE -->
-        <div id="page-elib" class="page sub-page-pb">
-            <div class="top-bar sub-header">
-                <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></div>
-                <h2 style="font-size: 1.1rem; font-weight: 800;">Perpustakaan Digital</h2>
-            </div>
-            <div style="padding: 0 1.5rem 1.5rem;">
-                <div style="background: white; display: flex; align-items: center; padding: 12px 15px; border-radius: 16px; margin-bottom: 1.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-                    <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; margin-right: 10px;"></i>
-                    <input type="text" placeholder="Cari buku, modul, jurnal..." style="border: none; outline: none; width: 100%; font-size: 0.9rem;">
-                </div>
-            </div>
-            <div class="book-grid">
-                <div class="book-card">
-                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" alt="Book" class="book-img">
-                    <div class="book-info">
-                        <span style="font-size: 0.65rem; color: var(--primary); font-weight: 700;">SAINS</span>
-                        <h4 style="font-size: 0.9rem; margin: 5px 0;">Fisika Kuantum Dasar</h4>
-                        <p style="font-size: 0.75rem; color: var(--text-muted);">Prof. Yohanes</p>
-                    </div>
-                </div>
-                <div class="book-card">
-                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400" alt="Book" class="book-img">
-                    <div class="book-info">
-                        <span style="font-size: 0.65rem; color: var(--warning); font-weight: 700;">SEJARAH</span>
-                        <h4 style="font-size: 0.9rem; margin: 5px 0;">Sejarah Dunia Modern</h4>
-                        <p style="font-size: 0.75rem; color: var(--text-muted);">Kemendikbud</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- KANTIN (E-WALLET) PAGE -->
-        <div id="page-kantin" class="page sub-page-pb">
-            <div class="top-bar sub-header">
-                <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></div>
-                <h2 style="font-size: 1.1rem; font-weight: 800;">E-Wallet Kantin</h2>
-            </div>
-            <div class="wallet-card">
-                <p style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 5px;">Saldo Aktif</p>
-                <h1 style="font-size: 2.5rem; margin-bottom: 20px;">Rp 125.000</h1>
-                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div>
-                        <p style="font-size: 0.7rem; opacity: 0.7;">ID Pelajar</p>
-                        <p style="font-size: 0.9rem; font-weight: 600; letter-spacing: 2px;">0081 223X XXXX</p>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); padding: 8px 15px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
-                        <i class="fa-solid fa-qrcode"></i> Bayar
-                    </div>
-                </div>
-            </div>
-            
-            <div style="padding: 0 1.5rem;">
-                <h3 style="font-size: 1rem; margin-bottom: 1rem;">Transaksi Terakhir</h3>
-                <div class="list-item" style="margin-bottom: 10px;">
-                    <div class="list-icon c-rose"><i class="fa-solid fa-utensils"></i></div>
-                    <div class="list-content">
-                        <h4>Kantin Bu Marni</h4>
-                        <p>12 Mar, 12:30</p>
-                    </div>
-                    <h4 style="color: var(--danger);">- Rp 15.000</h4>
-                </div>
-                <div class="list-item">
-                    <div class="list-icon c-emerald"><i class="fa-solid fa-plus"></i></div>
-                    <div class="list-content">
-                        <h4>Top Up Saldo</h4>
-                        <p>10 Mar, 08:15</p>
-                    </div>
-                    <h4 style="color: var(--success);">+ Rp 50.000</h4>
-                </div>
-            </div>
-        </div>
-
-        <!-- NOTIFIKASI PAGE -->
-        <div id="page-notif" class="page sub-page-pb">
-            <div class="top-bar sub-header">
-                <div class="back-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></div>
-                <h2 style="font-size: 1.1rem; font-weight: 800;">Notifikasi</h2>
-            </div>
-            <div class="list-container">
-                <div class="list-item" style="border-left: 4px solid var(--primary);">
-                    <div class="list-icon c-indigo"><i class="fa-solid fa-bullhorn"></i></div>
-                    <div class="list-content">
-                        <h4>Pemberitahuan Ujian</h4>
-                        <p>Ujian Tengah Semester akan dimulai minggu depan.</p>
-                        <span style="font-size: 0.7rem; color: #cbd5e1; margin-top: 5px; display: block;">1 Jam yang lalu</span>
-                    </div>
-                </div>
-                <div class="list-item">
-                    <div class="list-icon c-emerald"><i class="fa-solid fa-check-double"></i></div>
-                    <div class="list-content">
-                        <h4>Tugas Dinilai</h4>
-                        <p>Tugas Biologi Bab 3 telah diberikan nilai oleh guru.</p>
-                        <span style="font-size: 0.7rem; color: #cbd5e1; margin-top: 5px; display: block;">Kemarin</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- GENERIC DETAIL PAGE (News/Promo) -->
-        <div id="page-detail" class="page sub-page-pb" style="background: white;">
-            <div class="top-bar sub-header" style="position: absolute; top:0; background: transparent; border: none;">
-                <div class="back-btn" onclick="goBack()" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);"><i class="fa-solid fa-arrow-left"></i></div>
-            </div>
-            <img id="detail-img" src="" alt="Cover" style="width: 100%; height: 300px; object-fit: cover;">
-            <div style="padding: 2rem 1.5rem; transform: translateY(-30px); background: white; border-radius: 30px 30px 0 0; position: relative;">
-                <span class="promo-tag" style="background: var(--primary); color: white; display: inline-block; margin-bottom: 15px;">Informasi</span>
-                <h1 id="detail-title" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.3;">Judul</h1>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px;"><i class="fa-regular fa-calendar"></i> 11 Maret 2026</p>
-                <p id="detail-desc" style="font-size: 1rem; line-height: 1.7; color: var(--text-main);">Deskripsi lengkap di sini...</p>
             </div>
         </div>
 
@@ -723,10 +417,10 @@
         <!-- BOTTOM NAVIGATION BAR                          -->
         <!-- ============================================== -->
         <nav class="nav-bar" id="main-nav">
-            <a href="#" class="nav-link active" data-target="page-home" onclick="goToPage('page-home')"><i class="fa-solid fa-house-chimney-window"></i></a>
-            <a href="#" class="nav-link" data-target="page-jadwal" onclick="goToPage('page-jadwal')"><i class="fa-solid fa-calendar-days"></i></a>
-            <a href="#" class="nav-link" data-target="page-pesan" onclick="goToPage('page-pesan')"><i class="fa-solid fa-message"></i></a>
-            <a href="#" class="nav-link" data-target="page-akun" onclick="goToPage('page-akun')"><i class="fa-solid fa-user-astronaut"></i></a>
+            <a href="#" class="nav-link active" data-target="page-home" onclick="goToPage('page-home'); return false;"><i class="fa-solid fa-house-chimney-window"></i></a>
+            <a href="#" class="nav-link" data-target="page-jadwal" onclick="goToPage('page-jadwal'); return false;"><i class="fa-solid fa-calendar-days"></i></a>
+            <a href="#" class="nav-link" data-target="page-pesan" onclick="goToPage('page-pesan'); return false;"><i class="fa-solid fa-message"></i></a>
+            <a href="#" class="nav-link" data-target="page-akun" onclick="goToPage('page-akun'); return false;"><i class="fa-solid fa-user-astronaut"></i></a>
         </nav>
 
         <!-- ============================================== -->
@@ -737,9 +431,9 @@
              <div class="popup-handle"></div>
              <h3 style="margin-bottom: 1.5rem; font-weight: 800;">Layanan Madrasah</h3>
              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
-                 <div class="menu-btn" style="padding: 10px;"><div class="icon-circle c-indigo"><i class="fa-solid fa-bus"></i></div><span>Bus Sekolah</span></div>
-                 <div class="menu-btn" style="padding: 10px;"><div class="icon-circle c-rose"><i class="fa-solid fa-briefcase-medical"></i></div><span>UKS</span></div>
-                 <div class="menu-btn" style="padding: 10px;"><div class="icon-circle c-emerald"><i class="fa-solid fa-people-group"></i></div><span>OSIS</span></div>
+                 <a href="/bus" class="menu-btn" style="padding: 10px;"><div class="icon-circle c-indigo"><i class="fa-solid fa-bus"></i></div><span>Bus Sekolah</span></a>
+                 <a href="/uks" class="menu-btn" style="padding: 10px;"><div class="icon-circle c-rose"><i class="fa-solid fa-briefcase-medical"></i></div><span>UKS</span></a>
+                 <a href="/osis" class="menu-btn" style="padding: 10px;"><div class="icon-circle c-emerald"><i class="fa-solid fa-people-group"></i></div><span>OSIS</span></a>
              </div>
              <button class="btn-primary" onclick="closeAll()" style="margin-top: 2rem;">Tutup Layanan</button>
         </div>
@@ -747,12 +441,8 @@
     </div>
 
     <script>
-        // ROUTING SYSTEM
-        let historyStack = ['page-home'];
-        const mainPages = ['page-home', 'page-jadwal', 'page-pesan', 'page-akun'];
-        const navBar = document.getElementById('main-nav');
-
-        function goToPage(pageId, isSubPage = false) {
+        // ROUTING UTAMA BOTTOM NAV (Agar template tetap jalan)
+        function goToPage(pageId) {
             // Hide all pages
             document.querySelectorAll('.page').forEach(p => {
                 p.classList.remove('active');
@@ -760,45 +450,16 @@
             
             // Show target page
             const target = document.getElementById(pageId);
-            target.classList.add('active');
-            
-            // Scroll to top smoothly
-            document.querySelector('.app-container').scrollTo({ top: 0, behavior: 'smooth' });
-
-            // Handle Navigation Bar Visibility
-            if (mainPages.includes(pageId)) {
-                navBar.classList.remove('hidden');
-                historyStack = [pageId]; // Reset history on main tabs
-                
-                // Update active state on icons
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.classList.remove('active');
-                    if(link.dataset.target === pageId) link.classList.add('active');
-                });
-            } else {
-                navBar.classList.add('hidden');
-                if(historyStack[historyStack.length - 1] !== pageId) {
-                    historyStack.push(pageId);
-                }
+            if(target) {
+                target.classList.add('active');
+                document.querySelector('.app-container').scrollTo({ top: 0, behavior: 'smooth' });
             }
-        }
 
-        function goBack() {
-            if(historyStack.length > 1) {
-                historyStack.pop(); // Remove current subpage
-                const prevPage = historyStack[historyStack.length - 1];
-                goToPage(prevPage, !mainPages.includes(prevPage));
-            } else {
-                goToPage('page-home');
-            }
-        }
-
-        // DETAIL PAGE HANDLER (News/Promo)
-        function openDetail(title, desc, imgUrl) {
-            document.getElementById('detail-title').innerText = title;
-            document.getElementById('detail-desc').innerText = desc;
-            document.getElementById('detail-img').src = imgUrl;
-            goToPage('page-detail', true);
+            // Update active state on icons
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if(link.dataset.target === pageId) link.classList.add('active');
+            });
         }
 
         // POPUP HANDLER
@@ -821,15 +482,6 @@
         function closeAll() {
             togglePopup('popup-more', false);
         }
-
-        // ANIMATIONS ON LOAD
-        window.onload = () => {
-            // Animate progress bar in Dashboard
-            setTimeout(() => {
-                const bar = document.getElementById('main-progress');
-                if(bar) bar.style.width = '72%';
-            }, 600);
-        };
     </script>
 </body>
 </html>
