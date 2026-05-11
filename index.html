@@ -80,6 +80,14 @@
             position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid rgba(0,0,0,0.02);
         }
+
+        .back-btn {
+            width: 40px; height: 40px; border-radius: var(--radius-sm);
+            background: var(--surface); display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.02); transition: 0.2s;
+        }
+        .back-btn:active { transform: scale(0.9); }
         
         .user-profile-sm { display: flex; align-items: center; gap: 12px; }
         .avatar-sm { 
@@ -130,6 +138,17 @@
             width: fit-content; padding: 4px 10px; border-radius: 8px; 
             font-size: 0.65rem; color: white; margin-bottom: 8px; font-weight: 600;
         }
+
+        /* --- NEWS CARDS --- */
+        .news-card {
+            display: flex; flex-direction: column; background: var(--surface);
+            border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0,0,0,0.02); margin-bottom: 1.2rem; text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .news-card:active { transform: scale(0.98); }
+        .news-card img { width: 100%; height: 150px; object-fit: cover; }
+        .news-content { padding: 1.2rem; }
 
         /* --- MODERN MENU --- */
         .main-menu { 
@@ -260,19 +279,19 @@
 
             <div class="section-header">
                 <h3>Info Terkini</h3>
-                <a href="/informasi" class="see-all">Lihat Semua</a>
+                <a href="#" onclick="goToPage('page-pengumuman'); return false;" class="see-all">Lihat Semua</a>
             </div>
             
             <div class="promo-slider">
-                <!-- Promo Card menggunakan tag <a> agar bisa diklik menuju URL sesungguhnya -->
-                <a href="/informasi/libur-idul-fitri" class="promo-card">
+                <!-- Promo Card dihubungkan ke detail -->
+                <a href="#" onclick="goToPage('page-pengumuman-detail'); return false;" class="promo-card">
                     <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600" alt="Libur">
                     <div class="promo-overlay">
                         <span class="promo-tag">Akademik</span>
                         <h4 style="color: white; font-size: 1rem; line-height: 1.3;">Persiapan Libur Idul Fitri 1447H</h4>
                     </div>
                 </a>
-                <a href="/informasi/prestasi-futsal" class="promo-card">
+                <a href="#" onclick="goToPage('page-pengumuman-detail'); return false;" class="promo-card">
                     <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600" alt="Prestasi">
                     <div class="promo-overlay">
                         <span class="promo-tag" style="background: rgba(16, 185, 129, 0.4);">Prestasi</span>
@@ -300,7 +319,99 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- 3. PAGE: EDUAI (Menggantikan Pesan)            -->
+        <!-- 2. PAGE: PENGUMUMAN (LIST)                     -->
+        <!-- ============================================== -->
+        <div id="page-pengumuman" class="page">
+            <div class="top-bar" style="justify-content: flex-start; gap: 15px;">
+                <div class="back-btn" onclick="goToPage('page-home')"><i class="fa-solid fa-arrow-left"></i></div>
+                <h2 style="font-size: 1.2rem; font-weight: 800;">Pengumuman</h2>
+            </div>
+            
+            <div style="padding: 1rem 1.5rem;">
+                <a href="#" onclick="goToPage('page-pengumuman-detail'); return false;" class="news-card">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600" alt="News Image">
+                    <div class="news-content">
+                        <span class="promo-tag" style="background: var(--primary); color: white; display: inline-block;">Akademik</span>
+                        <h4 style="margin: 8px 0; font-size: 1.05rem; color: var(--text-main);">Persiapan Libur Idul Fitri 1447H</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;"><i class="fa-regular fa-calendar"></i> 10 April 2026</p>
+                    </div>
+                </a>
+
+                <a href="#" onclick="goToPage('page-pengumuman-detail'); return false;" class="news-card">
+                    <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600" alt="News Image">
+                    <div class="news-content">
+                        <span class="promo-tag" style="background: var(--success); color: white; display: inline-block;">Prestasi</span>
+                        <h4 style="margin: 8px 0; font-size: 1.05rem; color: var(--text-main);">Eskul Futsal Raih Medali Emas Provinsi</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;"><i class="fa-regular fa-calendar"></i> 05 April 2026</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 3. PAGE: PENGUMUMAN (DETAIL)                   -->
+        <!-- ============================================== -->
+        <div id="page-pengumuman-detail" class="page" style="background: white;">
+            <div class="top-bar" style="position: absolute; top:0; background: transparent; border: none; z-index: 10;">
+                <div class="back-btn" onclick="goToPage('page-pengumuman')" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);"><i class="fa-solid fa-arrow-left"></i></div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600" alt="Cover" style="width: 100%; height: 320px; object-fit: cover;">
+            <div style="padding: 2.5rem 1.5rem; transform: translateY(-40px); background: white; border-radius: 35px 35px 0 0; position: relative;">
+                <span class="promo-tag" style="background: var(--primary); color: white; display: inline-block; margin-bottom: 15px;">Akademik</span>
+                <h1 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.35;">Persiapan Libur Idul Fitri 1447H</h1>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 1.5rem;"><i class="fa-regular fa-calendar"></i> 10 April 2026 • Oleh Admin Madrasah</p>
+                <div style="font-size: 1rem; line-height: 1.8; color: var(--text-main);">
+                    <p style="margin-bottom: 1rem;">Berkenaan dengan libur nasional dan cuti bersama Idul Fitri 1447H, kami informasikan bahwa seluruh kegiatan Kegiatan Belajar Mengajar (KBM) ditiadakan mulai tanggal <strong>10 April hingga 20 April 2026</strong>.</p>
+                    <p style="margin-bottom: 1rem;">Siswa diharapkan tetap menjaga kesehatan dan memanfaatkan waktu libur untuk beristirahat serta berkumpul bersama keluarga di rumah.</p>
+                    <p style="margin-bottom: 1rem;">Kegiatan KBM akan kembali aktif seperti biasa pada hari <strong>Selasa, 21 April 2026</strong>.</p>
+                    <p>Terima kasih atas perhatiannya. Selamat menyambut hari raya Idul Fitri.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 4. PAGE: JADWAL PELAJARAN                      -->
+        <!-- ============================================== -->
+        <div id="page-jadwal" class="page">
+            <div class="top-bar">
+                <h2 style="font-size: 1.2rem; font-weight: 800;">Jadwal Pelajaran</h2>
+            </div>
+            
+            <div class="calendar-strip">
+                <div class="cal-item"><span>Sen</span><strong>11</strong></div>
+                <div class="cal-item active"><span>Sel</span><strong>12</strong></div>
+                <div class="cal-item"><span>Rab</span><strong>13</strong></div>
+                <div class="cal-item"><span>Kam</span><strong>14</strong></div>
+                <div class="cal-item"><span>Jum</span><strong>15</strong></div>
+            </div>
+
+            <div style="padding: 0.5rem 1.5rem 1rem;">
+                <div class="schedule-card sc-blue">
+                    <p style="font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 4px;">07:00 - 08:30</p>
+                    <h4 style="margin-bottom: 6px; font-size: 1.1rem;">Matematika Peminatan</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-user-tie"></i> Pak Budi Santoso, M.Pd
+                    </p>
+                </div>
+                <div class="schedule-card sc-red">
+                    <p style="font-size: 0.75rem; color: var(--danger); font-weight: 800; margin-bottom: 4px;">08:30 - 10:00</p>
+                    <h4 style="margin-bottom: 6px; font-size: 1.1rem;">Fisika</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-user-tie"></i> Ibu Siti Aminah, S.Si
+                    </p>
+                </div>
+                <div class="schedule-card sc-green">
+                    <p style="font-size: 0.75rem; color: var(--success); font-weight: 800; margin-bottom: 4px;">10:30 - 12:00</p>
+                    <h4 style="margin-bottom: 6px; font-size: 1.1rem;">Pendidikan Agama Islam</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-user-tie"></i> Ustadz H. Ahmad, Lc
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 5. PAGE: EDUAI (Menggantikan Pesan)            -->
         <!-- ============================================== -->
         <div id="page-eduai" class="page">
             <div class="top-bar">
@@ -335,7 +446,7 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- 4. PAGE: AKUN / PROFIL                         -->
+        <!-- 6. PAGE: AKUN / PROFIL                         -->
         <!-- ============================================== -->
         <div id="page-akun" class="page">
             <div style="padding: 3rem 1.5rem 2rem; text-align: center; background: white; border-radius: 0 0 40px 40px; box-shadow: 0 10px 20px rgba(0,0,0,0.02);">
@@ -402,7 +513,7 @@
     </div>
 
     <script>
-        // ROUTING UTAMA BOTTOM NAV (Agar template tetap jalan)
+        // ROUTING UTAMA BOTTOM NAV & SUB PENGUMUMAN
         function goToPage(pageId) {
             // Hide all pages
             document.querySelectorAll('.page').forEach(p => {
@@ -416,7 +527,15 @@
                 document.querySelector('.app-container').scrollTo({ top: 0, behavior: 'smooth' });
             }
 
-            // Update active state on icons
+            // Sembunyikan Bottom Nav jika masuk sub-page detail/list pengumuman
+            const navBar = document.getElementById('main-nav');
+            if (pageId === 'page-pengumuman' || pageId === 'page-pengumuman-detail') {
+                navBar.style.transform = 'translateX(-50%) translateY(150%)';
+            } else {
+                navBar.style.transform = 'translateX(-50%) translateY(0)';
+            }
+
+            // Update active state on icons for main nav
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
                 if(link.dataset.target === pageId) link.classList.add('active');
