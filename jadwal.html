@@ -86,7 +86,6 @@
         /* --- CALENDAR STRIP --- */
         .calendar-strip { 
             display: flex; gap: 12px; overflow-x: auto; 
-            /* Perbaikan: Memberikan ruang (padding top 10px) agar saat aktif (keangkat) tidak terpotong */
             padding: 10px 1.5rem 1.5rem; scroll-snap-type: x mandatory;
         }
         .cal-item { 
@@ -151,6 +150,7 @@
             font-size: 0.65rem; background: var(--danger); color: white; 
             padding: 4px 10px; border-radius: 8px; font-weight: 800; 
             animation: pulse-danger 2s infinite; letter-spacing: 0.5px;
+            display: none; /* Disembunyikan secara default */
         }
 
         /* Break / Istirahat styling */
@@ -208,16 +208,17 @@
         <!-- ============================================== -->
         <!-- VIEW: HARI SENIN                               -->
         <!-- ============================================== -->
-        <div id="view-senin" class="day-view active">
+        <div id="view-senin" class="day-view active" data-day="1">
             <div class="timeline-container">
                 
-                <div class="schedule-card sc-gray">
+                <div class="schedule-card sc-gray" data-start="06:45" data-end="07:30">
+                    <div class="live-badge">SEKARANG</div>
                     <div class="time-badge tb-gray"><i class="fa-regular fa-clock"></i> 06:45 - 07:30</div>
                     <h4>Upacara Bendera</h4>
                     <div class="info-row"><i class="fa-solid fa-location-dot"></i> Lapangan Utama</div>
                 </div>
 
-                <div class="schedule-card sc-indigo">
+                <div class="schedule-card sc-indigo" data-start="07:30" data-end="09:00">
                     <div class="live-badge">SEKARANG</div>
                     <div class="time-badge tb-indigo"><i class="fa-regular fa-clock"></i> 07:30 - 09:00</div>
                     <h4>Matematika Peminatan</h4>
@@ -225,29 +226,32 @@
                     <div class="info-row"><i class="fa-solid fa-door-open"></i> Ruang XII MIPA 1</div>
                 </div>
 
-                <div class="schedule-card sc-amber">
+                <div class="schedule-card sc-amber" data-start="09:00" data-end="10:30">
+                    <div class="live-badge">SEKARANG</div>
                     <div class="time-badge tb-amber"><i class="fa-regular fa-clock"></i> 09:00 - 10:30</div>
                     <h4>Fisika</h4>
                     <div class="info-row"><i class="fa-solid fa-user-tie"></i> Ibu Siti Aminah, S.Si</div>
                     <div class="info-row"><i class="fa-solid fa-flask"></i> Lab Fisika Lt. 2</div>
                 </div>
 
-                <div class="schedule-card break-card">
-                    <p><i class="fa-solid fa-mug-hot"></i> 10:30 - 11:00 • Istirahat Pertama</p>
+                <div class="schedule-card break-card" data-start="10:30" data-end="11:00">
+                    <p><i class="fa-solid fa-mug-hot"></i> 10:30 - 11:00 • Istirahat Pertama <span class="live-badge" style="position: static; display: inline-block; margin-left: 10px; display: none;">SEKARANG</span></p>
                 </div>
 
-                <div class="schedule-card sc-emerald">
+                <div class="schedule-card sc-emerald" data-start="11:00" data-end="12:30">
+                    <div class="live-badge">SEKARANG</div>
                     <div class="time-badge tb-emerald"><i class="fa-regular fa-clock"></i> 11:00 - 12:30</div>
                     <h4>Biologi Lintas Minat</h4>
                     <div class="info-row"><i class="fa-solid fa-user-tie"></i> Ibu Rini Wulandari, S.Pd</div>
                     <div class="info-row"><i class="fa-solid fa-door-open"></i> Ruang XII MIPA 1</div>
                 </div>
                 
-                <div class="schedule-card break-card">
-                    <p><i class="fa-solid fa-mosque"></i> 12:30 - 13:00 • ISHOMA</p>
+                <div class="schedule-card break-card" data-start="12:30" data-end="13:00">
+                    <p><i class="fa-solid fa-mosque"></i> 12:30 - 13:00 • ISHOMA <span class="live-badge" style="position: static; display: inline-block; margin-left: 10px; display: none;">SEKARANG</span></p>
                 </div>
 
-                <div class="schedule-card sc-rose">
+                <div class="schedule-card sc-rose" data-start="13:00" data-end="14:30">
+                    <div class="live-badge">SEKARANG</div>
                     <div class="time-badge tb-rose"><i class="fa-regular fa-clock"></i> 13:00 - 14:30</div>
                     <h4>Bahasa Indonesia</h4>
                     <div class="info-row"><i class="fa-solid fa-user-tie"></i> Bpk. Herman Susilo, M.A</div>
@@ -260,39 +264,43 @@
         <!-- ============================================== -->
         <!-- VIEW: HARI SELASA                              -->
         <!-- ============================================== -->
-        <div id="view-selasa" class="day-view">
+        <div id="view-selasa" class="day-view" data-day="2">
             <div class="timeline-container">
                 
-                <div class="schedule-card sc-emerald">
+                <div class="schedule-card sc-emerald" data-start="07:00" data-end="08:30">
+                    <div class="live-badge">SEKARANG</div>
                     <div class="time-badge tb-emerald"><i class="fa-regular fa-clock"></i> 07:00 - 08:30</div>
                     <h4>Kimia Lanjutan</h4>
                     <div class="info-row"><i class="fa-solid fa-user-tie"></i> Bpk. Anton Syahputra, M.Si</div>
                     <div class="info-row"><i class="fa-solid fa-flask"></i> Lab Kimia Lt. 1</div>
                 </div>
 
-                <div class="schedule-card sc-sky" style="border-left: 6px solid #0ea5e9;">
+                <div class="schedule-card sc-sky" style="border-left: 6px solid #0ea5e9;" data-start="08:30" data-end="10:00">
+                    <div class="live-badge">SEKARANG</div>
                     <div class="time-badge" style="background: #e0f2fe; color: #0284c7;"><i class="fa-regular fa-clock"></i> 08:30 - 10:00</div>
                     <h4>Bahasa Inggris</h4>
                     <div class="info-row"><i class="fa-solid fa-user-tie"></i> Miss Diana, S.Pd</div>
                     <div class="info-row"><i class="fa-solid fa-door-open"></i> Ruang XII MIPA 1</div>
                 </div>
 
-                <div class="schedule-card break-card">
-                    <p><i class="fa-solid fa-mug-hot"></i> 10:00 - 10:30 • Istirahat Pertama</p>
+                <div class="schedule-card break-card" data-start="10:00" data-end="10:30">
+                    <p><i class="fa-solid fa-mug-hot"></i> 10:00 - 10:30 • Istirahat Pertama <span class="live-badge" style="position: static; display: inline-block; margin-left: 10px; display: none;">SEKARANG</span></p>
                 </div>
 
-                <div class="schedule-card sc-emerald" style="border-left: 6px solid #10b981;">
+                <div class="schedule-card sc-emerald" style="border-left: 6px solid #10b981;" data-start="10:30" data-end="12:00">
+                    <div class="live-badge">SEKARANG</div>
                     <div class="time-badge tb-emerald"><i class="fa-regular fa-clock"></i> 10:30 - 12:00</div>
                     <h4>Pendidikan Agama Islam</h4>
                     <div class="info-row"><i class="fa-solid fa-user-tie"></i> Ustadz H. Ahmad, Lc</div>
                     <div class="info-row"><i class="fa-solid fa-mosque"></i> Masjid Sekolah</div>
                 </div>
 
-                <div class="schedule-card break-card">
-                    <p><i class="fa-solid fa-mosque"></i> 12:00 - 12:45 • ISHOMA</p>
+                <div class="schedule-card break-card" data-start="12:00" data-end="12:45">
+                    <p><i class="fa-solid fa-mosque"></i> 12:00 - 12:45 • ISHOMA <span class="live-badge" style="position: static; display: inline-block; margin-left: 10px; display: none;">SEKARANG</span></p>
                 </div>
 
-                <div class="schedule-card sc-amber">
+                <div class="schedule-card sc-amber" data-start="12:45" data-end="14:15">
+                    <div class="live-badge">SEKARANG</div>
                     <div class="time-badge tb-amber"><i class="fa-regular fa-clock"></i> 12:45 - 14:15</div>
                     <h4>Sejarah Peminatan</h4>
                     <div class="info-row"><i class="fa-solid fa-user-tie"></i> Ibu Kartini, M.Pd</div>
@@ -305,7 +313,7 @@
         <!-- ============================================== -->
         <!-- VIEW: HARI RABU, KAMIS, JUMAT (DUMMY/KOSONG)   -->
         <!-- ============================================== -->
-        <div id="view-rabu" class="day-view">
+        <div id="view-rabu" class="day-view" data-day="3">
             <div class="timeline-container">
                 <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
                     <i class="fa-regular fa-calendar-xmark" style="font-size: 3rem; margin-bottom: 1rem; color: #cbd5e1;"></i>
@@ -315,7 +323,7 @@
             </div>
         </div>
         
-        <div id="view-kamis" class="day-view">
+        <div id="view-kamis" class="day-view" data-day="4">
             <div class="timeline-container">
                 <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
                     <i class="fa-regular fa-calendar-xmark" style="font-size: 3rem; margin-bottom: 1rem; color: #cbd5e1;"></i>
@@ -325,7 +333,7 @@
             </div>
         </div>
 
-        <div id="view-jumat" class="day-view">
+        <div id="view-jumat" class="day-view" data-day="5">
             <div class="timeline-container">
                 <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
                     <i class="fa-regular fa-calendar-xmark" style="font-size: 3rem; margin-bottom: 1rem; color: #cbd5e1;"></i>
@@ -343,21 +351,15 @@
 
         // FUNGSI 1: MENGHITUNG TANGGAL OTOMATIS (UTC+7 JAKARTA)
         function generateDates() {
-            // Ambil waktu saat ini dengan patokan Timezone Jakarta (WIB / UTC+7)
             const dateWIBString = new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
             const today = new Date(dateWIBString);
             
-            // Dapatkan hari dalam minggu (0 = Minggu, 1 = Senin, ... 6 = Sabtu)
             let currentDayIndex = today.getDay(); 
-            
-            // Hitung selisih hari untuk mendapatkan tanggal di hari SENIN pada minggu ini
-            // Jika hari ini Minggu (0), maka mundur 6 hari. Jika hari lain, mundur (1 - hari ini).
             const diffToMonday = currentDayIndex === 0 ? -6 : 1 - currentDayIndex;
             
             const mondayDate = new Date(today);
             mondayDate.setDate(today.getDate() + diffToMonday);
 
-            // Masukkan tanggal-tanggal yang didapat (Senin - Jumat) ke dalam HTML
             hariIndo.forEach((hari, index) => {
                 const targetDate = new Date(mondayDate);
                 targetDate.setDate(mondayDate.getDate() + index);
@@ -365,9 +367,47 @@
                 const btnItem = document.getElementById('btn-' + hari);
                 if(btnItem) {
                     const strongText = btnItem.querySelector('strong');
-                    strongText.innerText = targetDate.getDate(); // Set angka tanggal
+                    strongText.innerText = targetDate.getDate(); 
                 }
             });
+        }
+
+        // FUNGSI BARU: CEK JADWAL "SEKARANG" BERDASARKAN WAKTU
+        function checkCurrentLesson() {
+            const dateWIBString = new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" });
+            const now = new Date(dateWIBString);
+            
+            const currentDayIndex = now.getDay(); // 1 = Senin, 2 = Selasa, dll
+            const currentHours = now.getHours();
+            const currentMinutes = now.getMinutes();
+            const currentTimeStr = `${currentHours.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}`;
+
+            // Sembunyikan semua label 'SEKARANG' terlebih dahulu
+            document.querySelectorAll('.live-badge').forEach(badge => {
+                badge.style.display = 'none';
+            });
+
+            // Hanya proses jika hari ini adalah Senin(1) - Jumat(5)
+            if(currentDayIndex >= 1 && currentDayIndex <= 5) {
+                const activeView = document.querySelector(`.day-view[data-day="${currentDayIndex}"]`);
+                if(activeView) {
+                    const scheduleCards = activeView.querySelectorAll('.schedule-card');
+                    
+                    scheduleCards.forEach(card => {
+                        const startTime = card.getAttribute('data-start');
+                        const endTime = card.getAttribute('data-end');
+                        
+                        // Cek apakah waktu sekarang berada di antara waktu mulai dan waktu selesai
+                        if(startTime && endTime && currentTimeStr >= startTime && currentTimeStr < endTime) {
+                            // Tampilkan label 'SEKARANG' pada kartu yang sedang berlangsung
+                            const liveBadge = card.querySelector('.live-badge');
+                            if(liveBadge) {
+                                liveBadge.style.display = card.classList.contains('break-card') ? 'inline-block' : 'block';
+                            }
+                        }
+                    });
+                }
+            }
         }
 
         // FUNGSI 2: NAVIGASI KE "HARI INI"
@@ -376,36 +416,30 @@
             const today = new Date(dateWIBString);
             const currentDayIndex = today.getDay(); 
             
-            // Jika hari ini adalah Senin(1) sampai Jumat(5)
             if (currentDayIndex >= 1 && currentDayIndex <= 5) {
                 const currentDayName = hariIndo[currentDayIndex - 1];
                 selectDay(currentDayName);
             } else {
-                // Jika akhir pekan (Sabtu/Minggu), arahkan ke jadwal Senin
                 selectDay('senin');
             }
         }
 
         // FUNGSI 3: MEMILIH HARI DARI KALENDER
         function selectDay(dayName) {
-            // Reset semua tab kalender
             document.querySelectorAll('.cal-item').forEach(item => {
                 item.classList.remove('active');
             });
             
-            // Aktifkan tab yang dipilih
             const selectedBtn = document.getElementById('btn-' + dayName);
             if(selectedBtn) {
                 selectedBtn.classList.add('active');
                 selectedBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
 
-            // Sembunyikan semua tampilan jadwal
             document.querySelectorAll('.day-view').forEach(view => {
                 view.classList.remove('active');
             });
 
-            // Tampilkan jadwal hari yang dipilih
             const selectedView = document.getElementById('view-' + dayName);
             if(selectedView) {
                 selectedView.classList.add('active');
@@ -414,8 +448,12 @@
 
         // Inisialisasi saat pertama kali halaman dimuat
         document.addEventListener("DOMContentLoaded", () => {
-            generateDates(); // Generate tanggal minggu ini
-            goToday();       // Otomatis arahkan tab ke hari ini
+            generateDates();
+            goToday();
+            checkCurrentLesson();
+            
+            // Cek setiap menit untuk memperbarui label "SEKARANG"
+            setInterval(checkCurrentLesson, 60000); 
         });
     </script>
 </body>
