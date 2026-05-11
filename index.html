@@ -288,7 +288,6 @@
                 <a href="/ujian" class="menu-btn"><div class="icon-circle c-amber"><i class="fa-solid fa-laptop-code"></i></div><span>Ujian</span></a>
                 <a href="/rapor" class="menu-btn"><div class="icon-circle c-emerald"><i class="fa-solid fa-graduation-cap"></i></div><span>Rapor</span></a>
                 
-                <a href="/konsul" class="menu-btn"><div class="icon-circle c-sky"><i class="fa-solid fa-comment-dots"></i></div><span>Konsul</span></a>
                 <a href="/elib" class="menu-btn"><div class="icon-circle c-violet"><i class="fa-solid fa-swatchbook"></i></div><span>E-Lib</span></a>
                 <a href="/kantin" class="menu-btn"><div class="icon-circle c-pink"><i class="fa-solid fa-wallet"></i></div><span>Kantin</span></a>
                 
@@ -301,75 +300,37 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- 2. PAGE: JADWAL PELAJARAN                      -->
+        <!-- 3. PAGE: EDUAI (Menggantikan Pesan)            -->
         <!-- ============================================== -->
-        <div id="page-jadwal" class="page">
+        <div id="page-eduai" class="page">
             <div class="top-bar">
-                <h2 style="font-size: 1.2rem; font-weight: 800;">Jadwal Pelajaran</h2>
+                <h2 style="font-size: 1.2rem; font-weight: 800;"><i class="fa-solid fa-robot" style="color: var(--primary); margin-right: 8px;"></i>EduAI</h2>
+                <i class="fa-solid fa-clock-rotate-left" style="color: var(--text-muted); cursor: pointer;"></i>
             </div>
-            
-            <div class="calendar-strip">
-                <div class="cal-item"><span>Sen</span><strong>11</strong></div>
-                <div class="cal-item active"><span>Sel</span><strong>12</strong></div>
-                <div class="cal-item"><span>Rab</span><strong>13</strong></div>
-                <div class="cal-item"><span>Kam</span><strong>14</strong></div>
-                <div class="cal-item"><span>Jum</span><strong>15</strong></div>
-            </div>
-
-            <div style="padding: 0.5rem 1.5rem 1rem;">
-                <div class="schedule-card sc-blue">
-                    <p style="font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 4px;">07:00 - 08:30</p>
-                    <h4 style="margin-bottom: 6px; font-size: 1.1rem;">Matematika Peminatan</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-user-tie"></i> Pak Budi Santoso, M.Pd
-                    </p>
+            <div style="padding: 1rem 1.5rem;">
+                <div style="background: linear-gradient(135deg, var(--primary), #8b5cf6); padding: 1.5rem; border-radius: var(--radius-lg); color: white; margin-bottom: 1.5rem; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 5px;">Hai, Vale! 👋</h3>
+                    <p style="font-size: 0.85rem; opacity: 0.9; margin-bottom: 15px;">Ada yang bisa Edu bantu hari ini? Tanyakan PR, ringkasan materi, atau latihan soal ujianmu.</p>
+                    <a href="/eduai/chat" style="display: block; text-align: center; width: 100%; padding: 0.8rem; border-radius: 12px; border: none; background: white; color: var(--primary); font-weight: 800; cursor: pointer; text-decoration: none;">Tanya EduAI Sekarang</a>
                 </div>
-                <div class="schedule-card sc-red">
-                    <p style="font-size: 0.75rem; color: var(--danger); font-weight: 800; margin-bottom: 4px;">08:30 - 10:00</p>
-                    <h4 style="margin-bottom: 6px; font-size: 1.1rem;">Fisika</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-user-tie"></i> Ibu Siti Aminah, S.Si
-                    </p>
-                </div>
-                <div class="schedule-card sc-green">
-                    <p style="font-size: 0.75rem; color: var(--success); font-weight: 800; margin-bottom: 4px;">10:30 - 12:00</p>
-                    <h4 style="margin-bottom: 6px; font-size: 1.1rem;">Pendidikan Agama Islam</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-user-tie"></i> Ustadz H. Ahmad, Lc
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================== -->
-        <!-- 3. PAGE: PESAN INBOX                           -->
-        <!-- ============================================== -->
-        <div id="page-pesan" class="page">
-            <div class="top-bar">
-                <h2 style="font-size: 1.2rem; font-weight: 800;">Pesan Masuk</h2>
-                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-            </div>
-            <div class="list-container">
-                <a href="/pesan/wali-kelas" class="list-item">
-                    <div class="avatar-sm" style="background: #10b981;">W</div>
-                    <div class="list-content">
-                        <div style="display: flex; justify-content: space-between;">
-                            <h4>Wali Kelas</h4>
-                            <span style="font-size: 0.7rem; color: var(--text-light);">10:42</span>
+                
+                <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-main);">Riwayat Obrolan</h3>
+                <div class="list-container" style="padding: 0;">
+                    <a href="/eduai/chat/1" class="list-item">
+                        <div class="list-icon c-indigo" style="border-radius: 50%;"><i class="fa-solid fa-message"></i></div>
+                        <div class="list-content">
+                            <h4>Cara menghitung limit trigonometri</h4>
+                            <p>Matematika Peminatan • Kemarin</p>
                         </div>
-                        <p style="color: var(--text-main); font-weight: 600;">Jangan lupa kumpulkan tugas Fisika hari ini.</p>
-                    </div>
-                </a>
-                <a href="/pesan/guru-bk" class="list-item">
-                    <div class="avatar-sm" style="background: #f59e0b;">BK</div>
-                    <div class="list-content">
-                        <div style="display: flex; justify-content: space-between;">
-                            <h4>Guru BK</h4>
-                            <span style="font-size: 0.7rem; color: var(--text-light);">Kemarin</span>
+                    </a>
+                    <a href="/eduai/chat/2" class="list-item">
+                        <div class="list-icon c-emerald" style="border-radius: 50%;"><i class="fa-solid fa-message"></i></div>
+                        <div class="list-content">
+                            <h4>Ringkasan Evolusi Darwin</h4>
+                            <p>Biologi • 3 Hari yang lalu</p>
                         </div>
-                        <p>Jadwal konseling karir universitas diundur besok.</p>
-                    </div>
-                </a>
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -419,7 +380,7 @@
         <nav class="nav-bar" id="main-nav">
             <a href="#" class="nav-link active" data-target="page-home" onclick="goToPage('page-home'); return false;"><i class="fa-solid fa-house-chimney-window"></i></a>
             <a href="#" class="nav-link" data-target="page-jadwal" onclick="goToPage('page-jadwal'); return false;"><i class="fa-solid fa-calendar-days"></i></a>
-            <a href="#" class="nav-link" data-target="page-pesan" onclick="goToPage('page-pesan'); return false;"><i class="fa-solid fa-message"></i></a>
+            <a href="#" class="nav-link" data-target="page-eduai" onclick="goToPage('page-eduai'); return false;"><i class="fa-solid fa-robot"></i></a>
             <a href="#" class="nav-link" data-target="page-akun" onclick="goToPage('page-akun'); return false;"><i class="fa-solid fa-user-astronaut"></i></a>
         </nav>
 
