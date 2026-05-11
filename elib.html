@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>E-Lib - MAN6 EDU Lab</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --accent: #6366f1;
+            --accent-soft: rgba(99, 102, 241, 0.1);
+            --bg-body: #e2e8f0;
+            --bg-app: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        ::-webkit-scrollbar { display: none; }
+        * { scrollbar-width: none; }
+
+        body { 
+            background-color: var(--bg-body); 
+            display: flex; justify-content: center; 
+            min-height: 100vh; color: var(--text-main); 
+        }
+
+        .app-container {
+            width: 100%; max-width: 440px; 
+            background-color: var(--bg-app);
+            min-height: 100vh; position: relative; 
+            overflow-x: hidden; overflow-y: auto;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+        }
+
+        /* --- SPA VIEW SYSTEM --- */
+        .view { display: none; padding-bottom: calc(40px + var(--safe-bottom)); }
+        .view.active { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- COMPONENTS --- */
+        .top-bar {
+            padding: 2rem 1.5rem 1rem;
+            display: flex; align-items: center; gap: 15px;
+            background: var(--glass-bg); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .back-btn {
+            width: 40px; height: 40px; border-radius: var(--radius-sm);
+            background: var(--surface); display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.02); transition: 0.2s;
+            color: var(--text-main); text-decoration: none;
+        }
+        .back-btn:active { transform: scale(0.9); }
+
+        /* Search Box */
+        .search-container { padding: 0 1.5rem 1.5rem; }
+        .search-box {
+            background: white; display: flex; align-items: center; 
+            padding: 12px 15px; border-radius: var(--radius-md); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+        }
+        .search-box input {
+            border: none; outline: none; width: 100%; font-size: 0.9rem; 
+            background: transparent; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* --- BOOK GRID --- */
+        .book-grid { 
+            display: grid; grid-template-columns: 1fr 1fr; 
+            gap: 1.2rem; padding: 0 1.5rem 1.5rem; 
+        }
+        .book-card { 
+            background: var(--surface); border-radius: var(--radius-md); 
+            overflow: hidden; box-shadow: var(--card-shadow); 
+            cursor: pointer; transition: 0.2s; border: 1px solid rgba(0,0,0,0.02);
+            display: flex; flex-direction: column;
+        }
+        .book-card:active { transform: scale(0.96); }
+        .book-img { 
+            width: 100%; height: 200px; background: #e2e8f0; 
+            object-fit: cover; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .book-info { padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between;}
+        .book-category { font-size: 0.65rem; color: var(--primary); font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; text-transform: uppercase;}
+        .book-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 5px; line-height: 1.3; color: var(--text-main); }
+        .book-author { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* --- BOOK DETAIL VIEW --- */
+        #view-detail { padding-bottom: calc(90px + var(--safe-bottom)); background: white;}
+        .detail-cover-container {
+            width: 100%; height: 320px; background: var(--bg-body);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .detail-cover-container::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(to top, rgba(255,255,255,1), transparent);
+        }
+        .detail-cover-img {
+            width: 160px; height: 230px; object-fit: cover; border-radius: 8px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); z-index: 1;
+        }
+        
+        .detail-content { padding: 1.5rem; position: relative; z-index: 2; margin-top: -30px;}
+        .detail-tags { display: flex; gap: 8px; margin-bottom: 10px; }
+        .tag { background: #f1f5f9; color: var(--text-muted); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700;}
+        
+        .detail-title { font-size: 1.4rem; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
+        .detail-author { font-size: 0.9rem; color: var(--primary); font-weight: 600; margin-bottom: 1.5rem; }
+        
+        .detail-section-title { font-size: 1rem; font-weight: 700; margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;}
+        .detail-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; text-align: justify;}
+
+        /* Fixed Bottom Action Bar */
+        .bottom-action-bar {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 440px; padding: 1rem 1.5rem calc(1rem + var(--safe-bottom));
+            background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0,0,0,0.05); display: flex; gap: 10px;
+        }
+        .btn-read {
+            flex: 1; padding: 14px; background: var(--primary); color: white;
+            border: none; border-radius: var(--radius-sm); font-weight: 800; font-size: 1rem;
+            cursor: pointer; box-shadow: 0 10px 20px -10px var(--primary); transition: 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-read:active { transform: translateY(2px); }
+        .btn-favorite {
+            width: 50px; height: 50px; border-radius: var(--radius-sm); border: 2px solid #e2e8f0;
+            background: white; color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; cursor: pointer; transition: 0.2s;
+        }
+        .btn-favorite.active { color: var(--danger); border-color: var(--danger); background: #fff1f2;}
+
+        /* --- PDF VIEWER --- */
+        #view-pdf { height: 100vh; overflow: hidden; padding-bottom: 0; display: flex; flex-direction: column;}
+        .pdf-frame { flex: 1; width: 100%; border: none; background: #e2e8f0;}
+        .external-link-btn {
+            background: var(--surface); border: 1px solid #e2e8f0; border-radius: 8px;
+            padding: 8px 12px; font-size: 0.8rem; font-weight: 700; color: var(--text-main);
+            text-decoration: none; display: flex; align-items: center; gap: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- ========================================== -->
+        <!-- VIEW 1: DAFTAR BUKU (GRID)                 -->
+        <!-- ========================================== -->
+        <div id="view-list" class="view active">
+            
+            <div class="top-bar">
+                <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+                <h2 style="font-size: 1.2rem; font-weight: 800;">Perpustakaan Digital</h2>
+            </div>
+
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; margin-right: 10px;"></i>
+                    <input type="text" placeholder="Cari buku, modul, referensi...">
+                </div>
+            </div>
+
+            <div class="book-grid">
+                
+                <!-- BUKU 1 (Yang diminta User) -->
+                <div class="book-card" onclick="openBookDetail(
+                    'Bahasa Indonesia Kelas X', 
+                    'Kemendikbud Ristek', 
+                    'Buku Siswa Bahasa Indonesia Kelas X Kurikulum Merdeka. Buku ini dirancang untuk mengembangkan kompetensi berbahasa dan bersastra peserta didik melalui pendekatan berbasis genre teks dan literasi digital yang interaktif.', 
+                    'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400',
+                    'https://repositori.kemendikdasmen.go.id/36148/1/Bahasa_Indonesia_BS_KLS_X_Rev.pdf',
+                    'Buku Siswa', 'Kelas 10'
+                )">
+                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" alt="Cover" class="book-img">
+                    <div class="book-info">
+                        <div>
+                            <div class="book-category">BAHASA INDONESIA</div>
+                            <h4 class="book-title">Bahasa Indonesia Kelas X</h4>
+                        </div>
+                        <p class="book-author">Kemendikbud Ristek</p>
+                    </div>
+                </div>
+
+                <!-- BUKU 2 (Dummy) -->
+                <div class="book-card" onclick="openBookDetail(
+                    'Fisika Dasar SMA', 
+                    'Prof. Yohanes Surya', 
+                    'Buku pedoman fisika dasar yang mencakup materi mekanika, termodinamika, gelombang, dan elektromagnetik. Disertai dengan contoh soal dan pembahasan komprehensif.', 
+                    'https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=400',
+                    '#',
+                    'Buku Referensi', 'MIPA'
+                )">
+                    <img src="https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=400" alt="Cover" class="book-img">
+                    <div class="book-info">
+                        <div>
+                            <div class="book-category" style="color: var(--warning);">SAINS / FISIKA</div>
+                            <h4 class="book-title">Fisika Dasar SMA</h4>
+                        </div>
+                        <p class="book-author">Prof. Yohanes Surya</p>
+                    </div>
+                </div>
+
+                <!-- BUKU 3 (Dummy) -->
+                <div class="book-card" onclick="openBookDetail(
+                    'Sejarah Dunia Modern', 
+                    'M. Ricklefs', 
+                    'Buku ini membahas perkembangan sejarah peradaban dunia dari masa Renaisans hingga era Perang Dingin. Sangat cocok sebagai buku pendamping untuk pelajaran Sejarah Peminatan.', 
+                    'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400',
+                    '#',
+                    'Ensiklopedia', 'Sejarah'
+                )">
+                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400" alt="Cover" class="book-img">
+                    <div class="book-info">
+                        <div>
+                            <div class="book-category" style="color: var(--success);">SEJARAH</div>
+                            <h4 class="book-title">Sejarah Dunia Modern</h4>
+                        </div>
+                        <p class="book-author">M. Ricklefs</p>
+                    </div>
+                </div>
+
+                <!-- BUKU 4 (Dummy) -->
+                <div class="book-card" onclick="openBookDetail(
+                    'Pendidikan Agama Islam X', 
+                    'Kemenag RI', 
+                    'Buku siswa PAI kelas 10 mencakup pembelajaran aqidah, fiqih, sejarah kebudayaan islam, dan pemahaman Al-Quran hadis untuk membangun karakter siswa yang berakhlak mulia.', 
+                    'https://images.unsplash.com/photo-1601142634808-38923eb7c560?w=400',
+                    '#',
+                    'Buku Siswa', 'Agama'
+                )">
+                    <img src="https://images.unsplash.com/photo-1601142634808-38923eb7c560?w=400" alt="Cover" class="book-img">
+                    <div class="book-info">
+                        <div>
+                            <div class="book-category" style="color: #14b8a6;">AGAMA ISLAM</div>
+                            <h4 class="book-title">Pend. Agama Islam X</h4>
+                        </div>
+                        <p class="book-author">Kemenag RI</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: DETAIL INFO BUKU                   -->
+        <!-- ========================================== -->
+        <div id="view-detail" class="view">
+            
+            <div class="top-bar" style="position: absolute; top:0; background: transparent; border: none; width: 100%;">
+                <div class="back-btn" onclick="closeBookDetail()" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);"><i class="fa-solid fa-arrow-left"></i></div>
+                <div class="back-btn" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);"><i class="fa-solid fa-share-nodes"></i></div>
+            </div>
+
+            <div class="detail-cover-container">
+                <img id="detail-img" src="" alt="Book Cover" class="detail-cover-img">
+            </div>
+
+            <div class="detail-content">
+                <div class="detail-tags" id="detail-tags">
+                    <!-- Tags diinjeksi via JS -->
+                </div>
+                
+                <h2 class="detail-title" id="detail-title">Judul Buku</h2>
+                <p class="detail-author" id="detail-author">Penulis</p>
+                
+                <h3 class="detail-section-title">Sinopsis / Info Buku</h3>
+                <p class="detail-desc" id="detail-desc">Deskripsi buku akan muncul di sini.</p>
+            </div>
+
+            <!-- Bottom Bar for Actions -->
+            <div class="bottom-action-bar">
+                <button class="btn-favorite" onclick="this.classList.toggle('active')"><i class="fa-solid fa-bookmark"></i></button>
+                <button class="btn-read" id="btn-read-book"><i class="fa-solid fa-book-open-reader"></i> Mulai Membaca</button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 3: PEMBACA PDF (FULLSCREEN IFRAME)    -->
+        <!-- ========================================== -->
+        <div id="view-pdf" class="view" style="display: none;">
+            <div class="top-bar" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="back-btn" onclick="closePdfReader()"><i class="fa-solid fa-xmark"></i></div>
+                    <div style="font-size: 0.9rem; font-weight: 700; width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="pdf-title-bar">Membaca...</div>
+                </div>
+                <!-- Tombol fallback jika iframe PDF diblokir oleh browser -->
+                <a href="#" id="pdf-external-link" target="_blank" class="external-link-btn">
+                    Buka di Browser <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+            </div>
+            
+            <iframe id="pdf-iframe" class="pdf-frame" src=""></iframe>
+        </div>
+
+    </div>
+
+    <!-- Script Interaktif -->
+    <script>
+        let currentPdfUrl = '';
+
+        // FUNGSI 1: MEMBUKA HALAMAN DETAIL BUKU
+        function openBookDetail(title, author, desc, coverImg, pdfUrl, tag1, tag2) {
+            // Set Data
+            document.getElementById('detail-title').innerText = title;
+            document.getElementById('detail-author').innerText = author;
+            document.getElementById('detail-desc').innerText = desc;
+            document.getElementById('detail-img').src = coverImg;
+            
+            // Set Tags
+            document.getElementById('detail-tags').innerHTML = `
+                <span class="tag">${tag1}</span>
+                <span class="tag">${tag2}</span>
+            `;
+
+            // Simpan URL PDF untuk digunakan saat tombol "Baca" diklik
+            currentPdfUrl = pdfUrl;
+
+            // Transisi View
+            document.getElementById('view-list').classList.remove('active');
+            document.getElementById('view-detail').classList.add('active');
+            
+            // Scroll ke atas
+            document.querySelector('.app-container').scrollTo({ top: 0, behavior: 'auto' });
+        }
+
+        // FUNGSI 2: KEMBALI DARI DETAIL KE LIST
+        function closeBookDetail() {
+            document.getElementById('view-detail').classList.remove('active');
+            document.getElementById('view-list').classList.add('active');
+            document.querySelector('.app-container').scrollTo({ top: 0, behavior: 'auto' });
+        }
+
+        // FUNGSI 3: MEMBUKA PDF READER
+        document.getElementById('btn-read-book').addEventListener('click', function() {
+            if(currentPdfUrl && currentPdfUrl !== '#') {
+                // Set judul di header PDF
+                document.getElementById('pdf-title-bar').innerText = document.getElementById('detail-title').innerText;
+                
+                // Set link eksternal (fallback)
+                document.getElementById('pdf-external-link').href = currentPdfUrl;
+                
+                // Load iframe
+                document.getElementById('pdf-iframe').src = currentPdfUrl;
+
+                // Transisi View
+                document.getElementById('view-detail').classList.remove('active');
+                document.getElementById('view-pdf').classList.add('active');
+                document.getElementById('view-pdf').style.display = 'flex'; // override display block
+            } else {
+                alert("Maaf, file PDF untuk buku ini belum tersedia.");
+            }
+        });
+
+        // FUNGSI 4: KEMBALI DARI PDF READER KE DETAIL
+        function closePdfReader() {
+            // Kosongkan iframe untuk menghentikan loading/memori
+            document.getElementById('pdf-iframe').src = '';
+            
+            document.getElementById('view-pdf').classList.remove('active');
+            setTimeout(() => { document.getElementById('view-pdf').style.display = 'none'; }, 300);
+            document.getElementById('view-detail').classList.add('active');
+        }
+
+    </script>
+</body>
+</html>
